@@ -1,0 +1,1448 @@
+% ====================================
+% Process options
+% ====================================
+
+%Option slides
+\newif\if@slide\@slidefalse
+\DeclareOption{slides}{\global\@slidetrue}
+\def\altSlide#1#2{\if@slide{#1}\else{#2}\fi}
+%
+\newif\if@english\@englishfalse
+\DeclareOption{english}{\global\@englishtrue}
+\def\altEnglish#1#2{\if@english{#1}\else{#2}\fi}
+%
+% \newif\if@myabbrevs\@myabbrevsfalse
+% \DeclareOption{myabbrevs}{\global\@myabbrevstrue}
+% \def\altMyAbbrevs#1#2{\if@myabbrevs{#1}\else{#2}\fi}
+%
+\ProcessOptions
+
+%
+%Some switches
+\def\altSlide#1#2{\if@slide{#1}\else{#2}\fi}
+\def\altTextSlide#1#2{\if@slide{#2}\else{#1}\fi}
+\def\altSize#1{\if@slide{{\small #1}}\else{#1}\fi}
+%
+\def\Emph{}
+\def\tEmph{}
+\def\tenewpage{}
+\renewcommand{\Emph}[1]{\altSlide{{\textbf{#1}}}{\textit{#1}}}
+\newcommand{\sEmph}[1]{\altSlide{\orange{#1}}{#1}}
+\renewcommand{\tEmph}[1]{\altSlide{{\textbf{#1}}}{{\textrm{#1}}}}
+
+
+%Slide generation
+\if@slide
+\newcommand{\Error}[1]{\artred{#1}}
+\else
+\newcommand{\ns}[1]{{\normalsize #1}}
+\newcommand{\Error}[1]{#1}
+\newcommand{\pause}{}
+\newcommand{\slnewline}{}
+\newcommand{\slnewpage}{}
+\renewcommand{\tenewpage}{\newpage}
+\newcommand{\slnormal}[1]{#1}
+\newcommand{\slsmall}[1]{#1}
+\fi
+
+%Additional packages
+\RequirePackage{ifthen}
+\RequirePackage{color}
+\RequirePackage{dsfont}
+\RequirePackage{amsmath,amssymb,amsfonts,amscd}
+\RequirePackage{trfsigns}
+%\altMyAbbrevs{\RequirePackage{myabbrevs}}{}
+\RequirePackage{myabbrevs}
+\RequirePackage[thinspace,thinqspace,squaren,textstyle]{SIunits}
+
+%====================================
+%Listings
+%====================================
+\renewcommand{\theenumi}{(\roman{enumi})} 
+\renewcommand{\theenumii}{(\alph{enumii})} 
+\renewcommand{\labelenumi}{\hbox{\theenumi}}
+\renewcommand{\labelenumii}{\hbox{\theenumii}}
+
+%====================================
+%Font sets
+%====================================
+%\RequirePackage{eufrak} %provided by amsmath
+\DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}
+\RequirePackage{calligra}
+\DeclareMathAlphabet{\mathcalligra}{T1}{calligra}{m}{n}
+\DeclareFontShape{T1}{calligra}{m}{n}{<->s*[2.2]callig15}{}
+\DeclareMathAlphabet{\mathvec}{U}{euf}{m}{n}
+\DeclareMathAlphabet{\mathvecb}{U}{euf}{b}{n}
+%\DeclareMathAlphabet{\mathfunc}{OTL}{phv}{m}{it}
+\DeclareMathAlphabet{\mathfunc}{OT1}{pzc}{m}{it}
+
+%====================================
+%Colors
+%====================================
+\definecolor{myaqua}{rgb}{0,0.5,0.5}
+\definecolor{mygreen}{rgb}{0.0,0.9,0.1}
+\definecolor{myred}{rgb}{1,0,0}
+\definecolor{myblue}{rgb}{0,0,1}
+\definecolor{mywhite}{rgb}{1,1,1}
+\definecolor{mymgray}{rgb}{0.5,0.5,0.5}
+\definecolor{mylgray}{rgb}{0.7,0.7,0.7}
+\definecolor{mymagenta}{rgb}{1,0,1} %magenta
+\definecolor{myorange}{rgb}{1,0.5,0}
+\definecolor{myblack}{rgb}{0,0,0}
+
+\if@slide
+\else
+\newcommand{\blue}[1]{\textcolor{myblue}{#1}}
+\newcommand{\red}[1]{\textcolor{myred}{#1}}
+\newcommand{\magenta}[1]{\textcolor{mymagenta}{#1}}
+\newcommand{\green}[1]{\textcolor{mygreen}{#1}}
+\newcommand{\aqua}[1]{\textcolor{myaqua}{#1}}
+\newcommand{\white}[1]{\textcolor{mywhite}{#1}}
+\newcommand{\lgray}[1]{\textcolor{mylgray}{#1}}
+\newcommand{\orange}[1]{\textcolor{myorange}{#1}}
+\newcommand{\black}[1]{\textcolor{myblack}{#1}}
+\fi
+\newcommand{\mgray}[1]{\textcolor{mymgray}{#1}}
+
+
+%====================================
+%Text
+%====================================
+\newabbrev\ZDGL{\altEnglish{state space represenation}{Zustandsdifferenzialgleichung}}
+\newabbrev\DGL{Differenzialgleichung}
+\newabbrev\DGLn{Differenzialgleichungen}
+\newabbrev\AB{\altEnglish{initial condition}{Anfangsbedingung}}
+\newabbrev\ABn{Anfangsbedingungen}
+\newabbrev\EAV{Eingangs--Ausgangs--Verhalten}
+\newabbrev\EAVs{Eingangs--Ausgangs--Verhaltens}
+\newabbrev\EAS{Eingangs--Ausgangs--Stabilität}
+\newabbrev\EEAL{Exakte Eingangs--/Aus\-gangs\-lin\-ear\-is\-ier\-ung}
+\newabbrev\EnEAL{Exakten Eingangs--/Aus\-gangs\-lin\-ear\-is\-ier\-ung}
+\newabbrev\EEZL{Exakte Eingangs--/Zu\-stands\-lin\-ear\-is\-ier\-ung}
+\newabbrev\EnEZL{Exakten Eingangs--/Zu\-stands\-lin\-ear\-is\-ier\-ung}
+\newabbrev\eas{eingangs--ausgangs--stabil}
+\newabbrev\ease{eingangs--ausgangs--stabile}
+\newabbrev\easen{eingangs--ausgangs--stabilen}
+\newabbrev\uf{über\-tra\-gungs\-funk\-tion}
+\newabbrev\ufn{über\-tra\-gungs\-funk\-tionen}
+\newabbrev\UF{Über\-tra\-gungs\-funk\-tion}
+\newabbrev\UFn{Über\-tra\-gungs\-funk\-tionen}
+\newabbrev\UM{Über\-tra\-gungs\-ma\-trix}
+\newabbrev\dB{dB}
+\newabbrev\EANF{Eingangs--Ausgangs--Nor\-mal\-form}
+\newabbrev\OP{optimization problem}
+\newabbrev\OPs{optimization problems}
+\newabbrev\KS{Koordinatensystem}
+\newabbrev\KSe{Koordinatensysteme}
+\newabbrev\KSn{Koordinatensystemen}
+\newabbrev\KSs{Koordinatensystems}
+\newabbrev\OpS{\textit{Operational Space}}
+\newabbrev\Link{\textit{Link}}
+\newabbrev\Links{\textit{Links}}
+\newabbrev\gMJac{geometrische Manipulator Jacobi--Matrix}
+\newabbrev\gMJacn{geometrischen Manipulator Jacobi--Matrix}
+\newabbrev\gMJacnn{geometrischen Manipulator Jacobi--Matrizen}
+\newabbrev\aMJac{analytische Manipulator Jacobi--Matrix}
+\newabbrev\aMJacn{analytischen Manipulator Jacobi--Matrix}
+\newabbrev\aMJacnn{analytischen Manipulator Jacobi--Matrizen}
+\newabbrev\MATLAB{\textsc{MATLAB}}
+\newabbrev\SIMULINK{\textsc{Simulink}}
+\newabbrev\MMA{\textsc{Mathematica}}
+\newabbrev\MAXIMA{\textsc{Maxima}}
+\newabbrev\MAPLE{\textsc{Maple}}
+\newabbrev\OCTAVE{\textsc{Octave}}
+\newabbrev\UMFPACK{\textsc{UMFPACK}}
+\newabbrev\ACADO{\textsc{ACADO}}
+\newabbrev\IPOPT{\textsc{Ipopt}}
+\newabbrev\PYTHON{\textsc{python}}
+\RequirePackage{mflogo} %-> \MF and \MP
+\newfont{\normald}{logo10 scaled 1024}
+\newabbrev\FEATPOST{{\normald FEATPOST}}
+
+%====================================
+%Commenting
+%====================================
+\newcommand{\marginnote}[1]{%
+\marginpar[{\raggedleft\footnotesize\itshape#1\par}]{\raggedright\footnotesize\itshape#1\par}}
+\newcommand{\com}[1][ADD]{\marginnote{\red{\rule{3pt}{12pt}}}\red{!! #1 !!}~}
+\newcommand{\ask}[1][ADD]{\marginnote{\green{\rule{3pt}{12pt}}}\green{?? #1 ??}~}
+\newcommand{\separator}{\noindent\rule{1.0\textwidth}{4pt}\\}
+\newcommand{\here}{\magenta{HERE}}
+
+%====================================
+%Formatting
+%====================================
+\newcommand{\ol}{\overline}
+\newcommand{\ul}{\underline}
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+\newcommand{\ds}{\displaystyle}
+\newcommand{\scst}{\scriptstyle}
+\newcommand{\sscst}{\scriptscriptstyle}
+\newcommand{\tst}{\textstyle}
+\newcommand{\mbf}[1]{\mathbf{#1}}
+\newcommand{\mrm}[1]{\mathrm{#1}}
+\newcommand{\spacer}{\hphantom{\ensuremath{\quad\,}}}
+\newcommand{\leftexp}[2]{^{#1}\!{#2}}
+\newcommand{\carg}[3][1]{\ifthenelse{\equal{#1}{1}}{#2}{{#3}}}
+\newcommand{\mphantom}[2][\displaystyle]{\rlap{\ensuremath{\mathsurround=0pt#1 {#2}}}}
+
+%====================================
+%Boxes
+%====================================
+
+\newenvironment{ncenter}
+ {\parskip=0pt\par\nopagebreak\centering}
+ {\par\noindent\ignorespacesafterend}
+
+ \newcommand{\handbox}[2][15.75]{%
+   \begin{ncenter}
+    \unitlength1cm
+    \begin{picture}(#1,#2)
+      \put(0,0){\dashbox(#1,#2){}}
+    \end{picture}
+  \end{ncenter}}
+
+\newcommand{\handboxA}[3][16]{%
+  \unitlength1cm
+  \begin{picture}(#1,#2)
+    \put(0,0){\dashbox(#1,#2){#3}}
+  \end{picture}}
+
+\newcommand{\handboxS}{%
+  \unitlength1cm
+  \begin{picture}(17.7,2)
+    \put(0,0){\dashbox(17.7,2){}}
+  \end{picture}}
+
+%====================================
+%Number sets
+%====================================
+\newcommand{\NNum}{\mathds{N}}
+\newcommand{\ZNum}{\mathds{Z}}
+\newcommand{\RNum}{\mathds{R}}
+\newcommand{\CNum}{\mathds{C}}
+
+%====================================
+%Mappings, sets, and sequences
+%====================================
+\newcommand{\range}[1]{\mathrm{ran}#1}
+\newcommand{\kernel}[1]{\mathrm{ker}#1} 
+\newcommand{\spectrum}[1]{\sigma(#1)}
+\newcommand{\trace}{\mathrm{tr}}
+\newcommand{\pointspectrum}[1]{\sigma_p(#1)}
+\newcommand{\resolventset}[1]{\rho(#1)}
+\newcommand{\ball}{\mathcal{B}}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\spanning}{span}
+\DeclareMathOperator{\adjoint}{adj}
+\DeclareMathOperator{\conv}{conv}
+%\DeclareMathOperator{\ln}{ln}
+%\DeclareMathOperator{\degree}{deg}
+%\newcommand{\det}{\text{det}}
+\newcommand{\set}[2][]{\{#2\}_{#1}}
+\newcommand{\setb}[2][]{\bigl\{#2\bigr\}_{#1}}
+\newcommand{\setB}[2][]{\Bigl\{#2\Bigr\}_{#1}}
+\newcommand{\setbb}[2][]{\biggl\{#2\biggr\}_{#1}}
+\newcommand{\Set}[2][]{\left\{#2\right\}_{#1}}
+\newcommand{\seq}[2][]{(#2)_{#1}}
+\newcommand{\seqb}[2][]{\bigl(#2\bigr)_{#1}}
+\newcommand{\seqB}[2][]{\Bigl(#2\Bigr)_{#1}}
+\newcommand{\seqbb}[2][]{\biggl(#2\biggr)_{#1}}
+\newcommand{\Seq}[2][]{\left(#2\right)_{#1}}
+\newcommand{\seqlr}[2][]{{\Seq[#1]{#2}}}
+\newcommand{\ltas}{<_{\text{as}}}
+\newcommand{\ltasn}[1][\inn]{<_{#1}}
+\newcommand{\sI}[1][\domdim]{I_{#1}}
+\newcommand{\sIA}[2][\domdim]{I_{#1}^{#2}}
+\newcommand{\sIu}[1][\udim]{I_{#1}}
+\newcommand{\sIuA}[2][\udim]{I_{#1}^{#2}}
+\newcommand{\sIy}[1][\ydim]{I_{#1}}
+\newcommand{\sIyA}[2][\ydim]{I_{#1}^{#2}}
+\newcommand{\sPow}[1]{\mathcal{P}(#1)}
+\newcommand{\sE}{\mathcal{E}}
+\newcommand{\sLc}{\mathcal{L}_c}
+\newcommand{\sLom}{{L}_{\omega}}
+\newcommand{\sLal}{{L}_{\alpha}}
+
+%====================================
+%Differential equations
+%====================================
+%\newcommand{\pde}[3][]{\partial^{#1}_{#3}{#2}}
+\newcommand{\pde}[3][]{%
+  \dfrac{\partial^{#1}{#2}}{\partial {#3}^{#1}}}
+\newcommand{\pdet}[3][]{%
+  \frac{\partial^{#1}{#2}}{\partial {#3}^{#1}}}
+\newcommand{\pdeTwo}[4][2]{%
+  \dfrac{\partial^{#1}{#2}}{\partial {#3}\partial {#4}}}
+\newcommand{\ode}[3][]{\dfrac{{\mathrm{d}}^{#1}{#2}}{{\mathrm{d}}{#3}^{#1}}}
+\newcommand{\odet}[3][]{\frac{{\mathrm{d}}^{#1}{#2}}{{\mathrm{d}}{#3}^{#1}}}
+\newcommand{\odetotal}[3][]{{\mathrm{d}}_{#3}^{#1}{#2}}
+\newcommand{\matode}[3][]{{\mathrm{D}}_{#3}^{#1}{#2}}
+
+%====================================
+%Domains and boundaries
+%====================================
+\newcommand{\dom}[1][]{\Omega_{#1}}
+\newcommand{\domc}[1][]{\ol{\Omega}_{#1}}
+\newcommand{\bdom}[1][]{\partial\Omega_{#1}}
+\newcommand{\domQ}[1][]{\mathcal{Q}_T}
+\newcommand{\domQc}[1][]{\overline{\mathcal{Q}}_T}
+\newcommand{\bdomQ}[1][]{\partial\domQ}
+\newcommand{\domdim}{r}
+
+%====================================
+%Function classes and spaces
+%====================================
+\newcommand{\xS}[1]{S^{#1}}
+\newcommand{\xX}[1][]{X_{#1}} %Use for Hilbert space
+\newcommand{\xXB}[1][]{B_{#1}} %Use for Banach space
+\newcommand{\xY}[1][]{Y_{#1}}
+\newcommand{\xU}[1][]{U_{#1}}
+\newcommand{\xV}[1][]{V_{#1}}
+\newcommand{\xW}[1][]{W_{#1}}
+\newcommand{\xZ}[1][]{Z_{#1}}
+\newcommand{\xBo}[1][]{\Xi_{#1}}
+\newcommand{\xC}[1][]{{C}^{#1}}
+\newcommand{\xCpw}[1][]{\hat{C}^{#1}}
+\newcommand{\xL}[1][2]{L^{#1}}
+\newcommand{\xLloc}[1][2]{L^{#1}_{\text{loc}}}
+\newcommand{\xl}[1][2]{\ell^{#1}}
+\newcommand{\xH}[1][2]{H^{#1}}
+\newcommand{\xHloc}[1][2]{H^{#1}_{\text{loc}}}
+\newcommand{\xBops}[1]{\mathcal{L}(#1)}
+\newcommand{\xBop}[2]{\mathcal{L}(#1,#2)}
+\newcommand{\xXad}{\xX[\text{ad}]}
+\newcommand{\xXta}{\xX[\text{ta}]}
+\newcommand{\xUfe}{U_{\text{fe}}}
+%
+\newcommand{\gevcon}{D}
+\newcommand{\gevord}{\alpha}
+\newcommand{\gevordb}{\beta}
+\newcommand{\xGevs}[1][\gevcon,\gevord]{{G}_{#1}}
+%
+\newcommand{\SO}[1]{SO(#1)}
+\newcommand{\SOE}[1]{SE(#1)}
+
+%====================================
+%Inner products / Norms
+%====================================
+\newcommand{\iprod}[3][]{\langle#2,#3\rangle_{#1}}
+\newcommand{\iprodb}[3][]{\bigl\langle#2,#3\bigr\rangle_{#1}}
+\newcommand{\iprodB}[3][]{\Bigl\langle#2,#3\Bigr\rangle_{#1}}
+\newcommand{\Iprod}[3][]{\left\langle#2,#3\right\rangle_{#1}}
+\newcommand{\norm}[2][]{\|#2\|_{#1}}
+\newcommand{\normb}[2][]{\bigl\|#2\bigr\|_{#1}}
+\newcommand{\normB}[2][]{\Bigl\|#2\Bigr\|_{#1}}
+\newcommand{\normbb}[2][]{\biggl\|#2\biggr\|_{#1}}
+\newcommand{\Norm}[2][]{\left\|#2\right\|_{#1}}
+\newcommand{\abs}[1]{\vert#1\vert}
+\newcommand{\absb}[1]{\bigl\vert#1\bigr\vert}
+\newcommand{\absB}[1]{\Bigl\vert#1\Bigr\vert}
+\newcommand{\absbb}[1]{\biggl\vert#1\biggr\vert}
+\newcommand{\Abs}[1]{\left\vert#1\right\vert}
+
+%====================================
+%Operators
+%====================================
+\newcommand{\opA}{\mathfrak{A}}
+\newcommand{\opB}{\mathfrak{B}}
+\newcommand{\opb}[1][]{\mathfrak{b}^{#1}}
+\newcommand{\opC}{\mathfrak{C}}
+\newcommand{\opc}[1][]{\mathfrak{c}^{#1}}
+\newcommand{\opD}{\mathfrak{D}}
+\newcommand{\opF}[1][]{\mathfrak{F}#1}
+\newcommand{\opG}{\mathfrak{G}}
+\newcommand{\opH}{\mathfrak{H}}
+\newcommand{\opJ}{\mathfrak{J}}
+\newcommand{\opL}[1][]{\mathfrak{L}#1}
+\newcommand{\opK}[1][]{\mathfrak{K}#1}
+\newcommand{\opKp}[1][]{\mathfrak{K}'#1}
+\newcommand{\opN}[1][]{\mathfrak{N}#1}
+\newcommand{\opR}[1][]{\mathfrak{R}#1}
+\newcommand{\opS}[1][]{\mathfrak{S}#1}
+\newcommand{\opT}[1][]{\mathfrak{T}#1}
+\newcommand{\dop}[1]{\mathcal{D}(#1)}
+\newcommand{\dopA}{\dop{\opA}}
+\newcommand{\dopB}{\dop{\opB}}
+\newcommand{\dopC}{\dop{\opC}}
+\newcommand{\dopD}{\dop{\opD}}
+\newcommand{\dopF}{\dop{\opF}}
+\newcommand{\dopL}{\dop{\opL}}
+\newcommand{\dopR}{\dop{\opR}}
+\newcommand{\dopT}{\dop{\opT}}
+%
+\newcommand{\adj}[1]{{#1}^\ast}
+\newcommand{\dual}[1]{{#1}^{\,\prime}}
+\newcommand{\ext}[1]{\tilde{#1}}
+\newcommand{\lapop}{\Delta}
+\newcommand{\divop}{\nabla\cdot}
+\newcommand{\gradop}{\nabla}
+\newcommand{\unitop}{\mathfrak{I}}
+\newcommand{\zeroop}{\mathfrak{0}}
+\newcommand{\rank}[1]{\mathrm{rk}(#1)}
+\newcommand{\Rank}{\mathrm{rang}}
+\renewcommand{\rank}{\mathrm{rank}}
+\newcommand{\spur}{\mathrm{spur}}
+\newcommand{\apply}{\circ}
+\newcommand{\intor}{\text{int}}
+
+%====================================
+%Special numbers 
+%====================================
+\providecommand{\E}{\mathrm{e}}
+\providecommand{\I}{\mathrm{i}}
+\let\imag=\I
+
+%====================================
+%Matrices and special 
+%====================================
+\renewcommand{\vec}[1]{\bs{#1}}
+
+\newcommand{\mA}{A}
+\newcommand{\mB}{B}
+\newcommand{\mC}{C}
+\newcommand{\mD}{D}
+\newcommand{\trafo}[1]{\tilde{#1}}
+\newcommand{\mAT}{\trafo{\mA}}
+\newcommand{\mBT}{\trafo{\mB}}
+\newcommand{\mCT}{\trafo{\mC}}
+\newcommand{\mDT}{\trafo{\mD}}
+\newcommand{\mAt}[1][\cts]{\mA#1}
+\newcommand{\mBt}[1][\cts]{\mB#1}
+\newcommand{\mCt}[1][\cts]{\mC#1}
+\newcommand{\mDt}[1][\cts]{\mD#1}
+\newcommand{\mAtT}[1][\cts]{\trafo{\mA}#1}
+\newcommand{\mAtB}[1][\cts]{\bar{\mA}#1}
+\newcommand{\mBtT}[1][\cts]{\trafo{\mB}#1}
+\newcommand{\mCtT}[1][\cts]{\trafo{\mC}#1}
+\newcommand{\mCtB}[1][\cts]{\bar{\mC}#1}
+\newcommand{\mDtT}[1][\cts]{\trafo{\mD}#1}
+\newcommand{\mH}{H}
+\newcommand{\mK}{K}
+\newcommand{\mKT}{\trafo{K}}
+\newcommand{\mKt}[1][\cts]{\mK#1}
+\newcommand{\mKtT}[1][\cts]{\mKT#1}
+\newcommand{\mJ}{J}
+\newcommand{\mL}{L}
+\newcommand{\mLt}[1][\cts]{L#1}
+\newcommand{\mLtT}[1][\cts]{\trafo{L}#1}
+\newcommand{\mP}{P}
+\newcommand{\mQ}{Q}
+\newcommand{\mR}{R}
+\newcommand{\mM}{H}
+\newcommand{\mN}{N}
+\newcommand{\mU}{E} %Identity matrix
+\newcommand{\mT}{V}
+\newcommand{\mTt}[1][\cts]{\mT#1}
+\newcommand{\mTti}[1][\cts]{\mT^{-1}#1}
+\newcommand{\dmTt}[1][\cts]{\dot{\mT}#1}
+\newcommand{\mV}{V}
+\newcommand{\mW}{W}
+\newcommand{\mF}[1][\cts]{\Phi#1}
+\newcommand{\mFt}[2][\ts]{\Phi(#1,#2)}
+\newcommand{\mFti}[2][\ts]{\Phi^{-1}(#1,#2)}
+\newcommand{\mFT}[1][\cts]{\trafo{\Phi}#1}
+\newcommand{\mFnl}[2][\ts]{\Phi_{#1}(#2)}
+\newcommand{\mFnli}[2][\ts]{\Phi^{-1}_{#1}(#2)}
+\newcommand{\mFnlN}[1][\ts]{\Phi_{#1}}
+\newcommand{\mFnliN}[1][\ts]{\Phi^{-1}_{#1}}
+\newcommand{\mPt}[2][\ts]{P(#1,#2)}
+\newcommand{\mG}{G}
+\newcommand{\mS}{S}
+
+\newcommand{\mb}{\bs{b}}
+\newcommand{\mbt}[1][]{\bs{b}_{#1}\cts}
+\newcommand{\mc}[1][^T]{\bs{c}#1}
+\newcommand{\mct}[1][^T]{\bs{c}#1\cts}
+\newcommand{\md}{d}
+\newcommand{\mdt}[1][]{d{#1}\cts}
+\newcommand{\mbT}{\trafo{\bs{b}}}
+\newcommand{\mcT}[1][^T]{\trafo{\bs{c}}#1}
+\newcommand{\mdT}{\trafo{d}}
+\newcommand{\mbtT}{\trafo{\bs{b}}\cts}
+\newcommand{\mctT}[1][^T]{\trafo{\bs{c}}#1\cts}
+\newcommand{\mdtT}{\trafo{d}\cts}
+\newcommand{\mdist}{\vec{f}}
+\newcommand{\mks}[2][\cts]{k_{#2}#1}
+\newcommand{\mkk}[1]{k#1}
+\newcommand{\mksT}[2][\cts]{\trafo{k}_{#2}#1}
+\newcommand{\mk}[1][^T]{\bs{k}\vphantom{k}#1}
+\newcommand{\mkt}[1][^T]{\bs{k}\vphantom{k}#1\cts}
+\newcommand{\mktT}[1][^T]{\trafo{\bs{k}}\vphantom{k}#1\cts}
+\newcommand{\ml}{\bs{l}}
+\newcommand{\mlt}[1][\cts]{\bs{l}#1}
+\newcommand{\mltT}[1][\cts]{\trafo{\bs{l}}#1}
+\newcommand{\mm}{h}
+\newcommand{\mpv}[1][^T]{\vec{p}#1}
+\newcommand{\mv}{\vec{v}}
+\newcommand{\mvt}{\vec{v}\cts}
+\newcommand{\mvtm}[1]{\vec{v}_{#1}\cts}
+\newcommand{\mw}[1][^T]{\vec{w}#1}
+\newcommand{\mwt}[1][^T]{\vec{w}#1\cts}
+\newcommand{\mwtm}[2][^T]{\vec{w}#1_{#2}\cts}
+\newcommand{\mwo}{\vec{w}}
+\newcommand{\mwob}{\obs{\vec{w}}}
+
+\newcommand{\mNull}{\mathcal{O}} %Nullmatrix
+\newcommand{\mKC}{S} %Kalman controllability matrix
+\newcommand{\mKCa}{(\mA,\mB)}
+\newcommand{\mKCat}{(\mAt,\mBt)}
+\newcommand{\mKCt}{\bar{S}} % 
+\newcommand{\mKO}{O} %Kalman observability matrix
+\newcommand{\mKOa}{(\mC,\mA)}
+\newcommand{\mKOat}{(\mCt,\mAt)}
+\newcommand{\mKOt}{\bar{O}}
+\newcommand{\mGC}{W_c} %Gramian controllability matrix
+\newcommand{\mGCi}{W_{c,\infty}}
+\newcommand{\mGO}{W_o} %Gramian observability matrix
+\newcommand{\mGOi}{W_{o,\infty}}
+\newcommand{\Markov}[1][\ink]{m_{#1}} %Markov parameter
+\newcommand{\Hankel}[1]{\mathcal{H}[{#1}]}
+\newcommand{\mAcl}{\mA_g} %closed-loop system matrix
+\newcommand{\mAclT}{\mAT_g}
+\newcommand{\mAol}{\mA_b} %observer error system matrix
+\newcommand{\mAolT}{\mAT_b}
+\newcommand{\oNA}[2][\mA]{N_{#1}^{#2}}
+\newcommand{\oMA}[2][\mA]{M_{#1}^{#2}}
+%
+\newcommand{\mKopt}[1][\cts]{\mathcal{K}#1} %Coupling matrix
+
+%Modeling - Mechanics
+\newcommand{\rotR}[2]{R_{#1}^{#2}}
+\newcommand{\drotR}[2]{\dot{R}_{#1}^{#2}}
+\newcommand{\rotS}[2]{S_{#1}^{#2}}
+\newcommand{\hT}[2]{H_{#1}^{#2}}
+\newcommand{\dhT}[2]{\dot{H}_{#1}^{#2}}
+\newcommand{\trv}[2]{\vec{d}_{#1}^{#2}}
+\newcommand{\dtrv}[2]{\dot{\vec{d}}_{#1}^{#2}}
+\newcommand{\prs}[1]{{p}_{#1}}
+\newcommand{\prv}[1]{\vec{p}_{#1}}
+\newcommand{\dprv}[1]{\dot{\vec{p}}_{#1}}
+\newcommand{\ddprv}[1]{\ddot{\vec{p}}_{#1}}
+\newcommand{\mvelo}[1]{\vec{v}_{#1}}
+\newcommand{\svelo}[1]{{v}_{#1}}
+\newcommand{\accel}[1]{\vec{a}_{#1}}
+\newcommand{\rrv}[1]{\vec{r}_{#1}}
+\newcommand{\drrv}[1]{\dot{\vec{r}}_{#1}}
+\newcommand{\ddrprv}[1]{\ddot{\vec{r}}_{#1}}
+\newcommand{\Prv}[1]{\tilde{\vec{p}}_{#1}}
+\newcommand{\dPrv}[1]{\dot{\tilde{\vec{p}}}_{#1}}
+\newcommand{\rom}[2]{\vec{\omega}_{#1}^{#2}}
+\newcommand{\roms}[2]{\omega_{#1}^{#2}}
+\newcommand{\drom}[2]{\dot{\vec{\omega}}_{#1}^{#2}}
+\newcommand{\droms}[2]{\dot{\omega}_{#1}^{#2}}
+\newcommand{\fors}[1][]{f^{#1}_{\here}}
+\newcommand{\afors}[2][]{f^{#1}_{#2}}
+\newcommand{\forv}[1][]{\vec{f}^{#1}}
+\newcommand{\tors}[2][]{\tau^{#1}_{#2}}
+\newcommand{\torv}[1][]{\vec{\tau}^{#1}}
+\newcommand{\mass}[1][]{m_{#1}}
+\newcommand{\cofm}{S}
+\newcommand{\imps}{{i}}
+\newcommand{\impv}{\vec{i}}
+\newcommand{\rimpv}[1][]{\vec{l}_{#1}}
+\newcommand{\mMoi}[1][]{I_{#1}}
+\newcommand{\work}[1][]{W^{#1}}
+\newcommand{\gcor}[1][]{q_{#1}}
+\newcommand{\gcorv}[1][]{\vec{q}_{#1}}
+\newcommand{\gcorvd}[1][]{^{\ast}\!\vec{q}_{#1}}
+\newcommand{\dgcor}[1][]{\dot{q}_{#1}}
+\newcommand{\dgcorv}[1][]{\dot{\vec{q}}_{#1}}
+\newcommand{\dgcorvd}[1][]{^{\ast}\!\dot{\vec{q}}_{#1}}
+\newcommand{\ddgcor}[1][]{\ddot{q}_{#1}}
+\newcommand{\ddgcorv}[1][]{\ddot{\vec{q}}_{#1}}
+\newcommand{\gfors}[1][]{Q_{#1}}
+\newcommand{\gforv}[1][]{\vec{Q}_{#1}}
+\newcommand{\efors}[1][]{Q^{nc}_{#1}}
+\newcommand{\eforse}[1][]{Q^{nc,e}_{#1}}
+\newcommand{\eforv}[1][]{\vec{Q}^{nc}_{#1}}
+\newcommand{\eforve}[1][]{\vec{Q}^{nc,e}_{#1}}
+
+\newcommand{\dofdim}{n}
+\newcommand{\sysdim}{N}
+
+% Modeling - Robotics
+\newcommand{\pose}[2]{\vec{x}_{#1}^{#2}}
+\newcommand{\posed}[2]{{}^{\ast}\!\vec{x}_{#1}^{#2}}
+\newcommand{\epose}[2]{\Delta\vec{x}_{#1}^{#2}}
+\newcommand{\depose}[2]{\Delta\dot{\vec{x}}_{#1}^{#2}}
+\newcommand{\dpose}[2]{\dot{\vec{x}}_{#1}^{#2}}
+\newcommand{\dposed}[2]{{}^{\ast}\!\dot{\vec{x}}_{#1}^{#2}}
+\newcommand{\ddpose}[2]{\ddot{\vec{x}}_{#1}^{#2}}
+\newcommand{\orie}[2]{\vec{\phi}_{#1}^{#2}}
+\newcommand{\dorie}[2]{\dot{\vec{\phi}}\vphantom{\vec{\phi}}_{#1}^{#2}}
+\newcommand{\twist}[1]{\vec{w}_{#1}}
+\newcommand{\twistd}[1]{{}^{\ast}\!\vec{w}_{#1}}
+\newcommand{\wspace}{\mathcal{W}}
+
+%Modeling - Thermodynamics
+\newcommand{\moln}[1][\inj]{N_{#1}}
+\newcommand{\pres}{p}
+\newcommand{\temp}{T}
+\newcommand{\ieng}[1][]{U_{#1}}
+\newcommand{\sieng}[1][]{u_{#1}}
+\newcommand{\enth}{H}
+\newcommand{\senth}[1][]{h_{#1}}
+\newcommand{\entr}{S}
+\newcommand{\entrf}{\dot{S}}
+\newcommand{\sentr}{s}
+\newcommand{\fenth}{G}
+\newcommand{\svol}[1][]{\nu_{#1}} %SET THIS to \upsilon
+\newcommand{\chpot}[1][\inj]{\mu_{#1}}
+\newcommand{\scv}[1][]{c_{\svol#1}}
+\newcommand{\scp}[1][]{c_{p#1}}
+\newcommand{\scpm}{\bar{c}_{p}}
+
+\newcommand{\heat}[1][]{Q_{#1}}
+\newcommand{\heatf}[1][]{\dot{Q}_{#1}}
+\newcommand{\heatfd}[1][]{\dot{\vec{q}}_{#1}}
+\newcommand{\heatfds}[1][]{\dot{q}_{#1}}
+\newcommand{\pow}[1][]{P_{#1}}
+
+\newcommand{\massf}[1][]{\dot{\mass}_{#1}}
+\newcommand{\voluf}{\dot{\volu}}
+
+\newcommand{\ges}{\text{ges}}
+\newcommand{\rev}{\text{rev}}
+\newcommand{\irev}{\text{irr}}
+\newcommand{\tech}{\text{tech}}
+\newcommand{\krit}{\text{krit}}
+\newcommand{\lami}{\text{lam}}
+\newcommand{\turb}{\text{turb}}
+\newcommand{\el}{\text{el}}
+\newcommand{\zu}{+}
+\newcommand{\ab}{-}
+\newcommand{\molwe}[1][\inj]{M_{#1}}
+
+\newcommand{\indgask}{R}
+\newcommand{\unigask}{\mathfrak{R}}
+
+\newcommand{\blay}[1][]{\delta_{#1}}
+\newcommand{\htran}{\alpha}
+\newcommand{\hdurch}{k}
+\newcommand{\visc}{\eta}
+\newcommand{\kvisc}{\nu_{\text{kin}}} 
+
+\newcommand{\NuZ}{\text{Nu}}
+\newcommand{\NuZav}{\overline{\NuZ}}
+\newcommand{\ReZ}{\text{Re}}
+\newcommand{\ReZc}{\text{Re}_{\krit}}
+\newcommand{\PrZ}{\text{Pr}}
+
+%Modeling - Reaction engineering
+\newcommand{\gint}[1][]{f#1}
+\newcommand{\gext}[1][]{F#1}
+\newcommand{\cmol}[1][]{c_{#1}}
+\newcommand{\gewa}[1][]{w_{#1}}
+\newcommand{\molbg}[1][]{y_{#1}}
+\newcommand{\molbf}[1][]{x_{#1}}
+\newcommand{\ppres}[1][]{\pres_{#1}}
+
+%====================================
+%Indices
+%====================================
+\newcommand{\ini}{i}
+\newcommand{\inI}{I}
+\newcommand{\inj}{j}
+\newcommand{\inJ}{J}
+\newcommand{\ink}{k}
+\newcommand{\inK}{K}
+\newcommand{\inl}{l}
+\newcommand{\inkj}[1][\inj]{\ink_{#1}}
+\newcommand{\indouble}[2]{#1_{#2}}
+\newcommand{\inm}{m}
+\newcommand{\inn}{n}
+\newcommand{\inN}{N}
+\newcommand{\inp}{p}
+\newcommand{\inq}{q}
+\newcommand{\inqb}{\ol{\inq}}
+\newcommand{\inr}{r}
+\newcommand{\lv}{\inl}
+\newcommand{\kv}{\ink}
+\newcommand{\kvb}{\bar{\ink}}
+\newcommand{\nv}{\inn}
+\newcommand{\Nv}{\inN}
+\newcommand{\Kv}{\inK}
+\newcommand{\Kvb}{\bar{\inK}}
+
+\newcommand{\inC}[1][]{\varrho_{#1}} %Controllability index
+\newcommand{\inO}[1][]{\rho_{#1}} %Observability index
+
+%====================================
+%Independent coordinates
+%====================================
+\newcommand{\tupex}[2]{{#1}_{(#2\vert)}} 
+%used to exclude an index from a tuple
+\newcommand{\tupexList}[2]{{#1}_{(#2)}} 
+%used to exclude an index from a tuple
+\newcommand{\ts}[1][]{t{#1}}    
+\newcommand{\tsb}{\bar{\ts}}    
+\newcommand{\tsd}{T}
+\newcommand{\tsf}{\tau} 
+\newcommand{\tsi}{\ts_0}
+%final time of existence interval        
+\newcommand{\zs}[1][]{z^{#1}}
+\newcommand{\zsA}[2][]{z^{#1}_{#2}}
+\newcommand{\zsb}[1][]{\bar{z}^{#1}}
+\newcommand{\Zs}[1][]{Z^{#1}}
+\newcommand{\zv}{{\zs[]}}
+\newcommand{\Zv}{{\Zs[]}}
+\newcommand{\zvex}[1][\ini]{\tupex{\zv}{#1}}
+\newcommand{\zvexList}[1][\ini\vert]{\tupexList{\zv}{{#1}}} 
+\newcommand{\czs}[1][\inj]{(\zs[#1])}
+\newcommand{\czst}[1]{({\zs[{#1}]},\ts)}
+\newcommand{\czvt}{(\zv,\ts)}
+\newcommand{\czv}{(\zv)}
+\newcommand{\czvex}[1][\ini]{({\zvex[#1]})}
+\newcommand{\czvtex}[1][\ini]{({\zvex[#1]},\ts)}
+\newcommand{\czvtexList}[1][\ini]{({\zvexList[#1]},\ts)}
+\newcommand{\cts}{(\ts)}
+\newcommand{\cta}{(\tau)}
+\newcommand{\cti}{(\tsi)}
+\newcommand{\css}{(s)}
+\newcommand{\cio}{(\imag\omega)}
+\newcommand{\czvs}{(\zv,s)}
+\newcommand{\cpp}{(\pde{}{\zv},\pde{}{\ts})}
+\newcommand{\czpp}{(\zv,\pde{}{\zv},\pde{}{\ts})}
+\newcommand{\cztpp}{(\zv,\ts,\pde{}{\zv},\pde{}{\ts})}
+\newcommand{\ck}[1][\ink]{(#1)}
+%
+\newcommand{\cxv}{{(\xv[])}}
+\newcommand{\cxs}{{(\xst[])}}
+\newcommand{\cxvT}{{(\xvT[])}}
+\newcommand{\cuv}{(\uv[])}
+\newcommand{\cyv}{(\yv[])}
+\newcommand{\cys}{(\yst[])}
+
+%Modeling
+\newcommand{\xco}[1][]{x_{#1}}
+\newcommand{\yco}[1][]{y_{#1}}
+\newcommand{\zco}[1][]{z_{#1}}
+\newcommand{\cosys}[2][0]{(#1\xco[#2]\yco[#2]\zco[#2])}
+\newcommand{\cosysb}[2][0]{(#1_{#2}\xco[#2]\yco[#2]\zco[#2])}
+\newcommand{\eco}[1]{\bs{e}_{#1}}
+\newcommand{\exco}[1]{\bs{e}_{\xco[#1]}}
+\newcommand{\eyco}[1]{\bs{e}_{\yco[#1]}}
+\newcommand{\ezco}[1]{\bs{e}_{\zco[#1]}}
+\newcommand{\cobase}[1]{\{\exco{#1},\eyco{#1},\ezco{#1}\}}
+
+%====================================
+%Transformations
+%====================================
+\newcommand{\tL}{\mathcal{L}}
+\newcommand{\tLi}{\mathcal{L}^{-1}}
+\newcommand{\tLa}[1][]{\mathcal{L}(#1)}
+\newcommand{\tLA}[1][]{\mathcal{L}\left(#1\right)}
+\newcommand{\tLia}[1][]{\mathcal{L}^{-1}(#1)}
+\newcommand{\tLiab}[1][]{\mathcal{L}^{-1}\bigl(#1\bigr)}
+\newcommand{\tLiA}[1][]{\mathcal{L}^{-1}\left(#1\right)}
+\newcommand{\lap}[1]{\hat{#1}}
+\newcommand{\lapM}{M}
+\newcommand{\lapG}{\gamma}
+\newcommand{\lapR}{r}
+
+%====================================
+%Variables and vectors
+%====================================
+
+\newcommand{\xdim}{n}
+\newcommand{\udim}{m}
+\newcommand{\ydim}{p}
+
+%------------------------------------
+%System state
+%------------------------------------
+\newcommand{\xs}[2][\cts]{x_{#2}#1}
+\newcommand{\xst}[1][\cts]{x#1}  
+\newcommand{\xsd}[2][\cts]{x^{\ast}_{#2}#1}
+\newcommand{\xstd}[1][\cts]{x^{\ast}#1}    
+\newcommand{\xv}[1][\cts]{\bs{x}#1}
+\newcommand{\xvd}[1][\cts]{\bs{x}^{\ast}#1}
+\newcommand{\Dxs}[2][\cts]{\Delta {x}_{#2}#1}
+\newcommand{\Dxst}[1][\cts]{\Delta {x}#1}
+\newcommand{\Dxv}[1][\cts]{\Delta\bs{x}#1}
+
+% - derivatives
+\newcommand{\dxs}[2][\cts]{\dot{{x}}_{#2}#1}
+\newcommand{\dxst}[1][\cts]{\dot{{x}}#1}
+\newcommand{\dxv}[1][(\ts)]{\dot{\bs{x}}#1}
+\newcommand{\ddxv}[1][(\ts)]{\ddot{\bs{x}}#1}
+\newcommand{\dxvd}[1][(\ts)]{\dot{\bs{x}}^{\ast}#1}
+\newcommand{\dDxv}[1][(\ts)]{\Delta\dot{\bs{x}}#1}
+
+% - discrete
+\newcommand{\xds}[1][\ink]{x(#1)}
+\newcommand{\xdv}[1][\ink]{\bs{x}(#1)}
+
+% - stationary
+\newcommand{\xsR}[1][]{{x}_{#1R}}
+\newcommand{\xvR}[1][]{\bs{x}_{#1R}}
+
+% - transformed
+\newcommand{\xTsymb}{z}
+\newcommand{\xvT}[1][\cts]{{\bs{\xTsymb}}#1}
+\newcommand{\xvTd}[1][\cts]{{\bs{\xTsymb}}^\ast#1}
+\newcommand{\xstT}[2][\cts]{{\xTsymb}_{#2}#1}
+\newcommand{\xstTd}[2][\cts]{{\xTsymb}^\ast_{#2}#1}
+\newcommand{\dxvT}[1][\cts]{\dot{{\bs{\xTsymb}}}#1}
+\newcommand{\dxstT}[2][\cts]{\dot{{\xTsymb}}_{#2}#1}
+% \newcommand{\xvT}[1][\cts]{\trafo{\bs{\xTsymb}}#1}
+% \newcommand{\xvTd}[1][\cts]{\trafo{\bs{\xTsymb}}^\ast#1}
+% \newcommand{\xstT}[2][\cts]{\trafo{\xTsymb}_{#2}#1}
+% \newcommand{\xstTd}[2][\cts]{\trafo{\xTsymb}^\ast_{#2}#1}
+% \newcommand{\dxvT}[1][\cts]{\dot{\trafo{\bs{\xTsymb}}}#1}
+% \newcommand{\dxstT}[2][\cts]{\dot{\trafo{\xTsymb}}_{#2}#1}
+
+
+% - Laplace
+\newcommand{\xsL}[2][\css]{\lap{x}_{#2}#1}
+\newcommand{\xstL}[1][\css]{\lap{x}#1} 
+\newcommand{\xvL}[1][\css]{\lap{\bs{x}}#1}
+
+% - observer 
+\newcommand{\obs}[1]{\hat{#1}}
+\newcommand{\obserr}[1]{\tilde{#1}}
+\newcommand{\xsob}[2][\cts]{\obs{x}_{#2}#1}
+\newcommand{\xvob}[1][\cts]{\obs{\vec{x}}#1}
+\newcommand{\Dxvob}[1][\cts]{\Delta\obs{\vec{x}}#1}
+\newcommand{\dxvob}[1][\cts]{\dot{\obs{\vec{x}}}#1}
+\newcommand{\xvoe}[1][\cts]{\obserr{\vec{x}}#1}
+\newcommand{\dxvoe}[1][\cts]{\dot{\obserr{\vec{x}}}#1}
+
+% - observer transformed
+\newcommand{\xsobT}[2][\cts]{\obs{\xTsymb}_{#2}#1}
+\newcommand{\xvobT}[1][\cts]{\obs{\vec{\xTsymb}}#1}
+\newcommand{\dxvobT}[1][\cts]{\dot{\obs{\vec{\xTsymb}}}#1}
+\newcommand{\xsoeT}[2][\cts]{\obserr{\xTsymb}_{#2}#1}
+\newcommand{\xvoeT}[1][\cts]{\obserr{\vec{\xTsymb}}#1}
+\newcommand{\dxvoeT}[1][\cts]{\dot{\obserr{\vec{\xTsymb}}}#1}
+
+% - distributed parameter
+\newcommand{\xvzt}[1][\czvt]{\bs{x}#1}
+
+
+%------------------------------------
+%Input
+%------------------------------------
+\newcommand{\us}[2][\cts]{u_{#2}#1}   
+\newcommand{\ust}[1][\cts]{u#1}   
+\newcommand{\usd}[2][\cts]{u^{\ast}_{#2}#1}
+\newcommand{\Dust}[1][(\ts)]{\Delta u#1}
+\newcommand{\ustd}[1][\cts]{u^{\ast}#1}  
+\newcommand{\uv}[1][\cts]{\bs{u}#1}
+\newcommand{\uvd}[1][\cts]{\bs{u}^{\ast}#1}
+\newcommand{\Duv}[1][(\ts)]{\Delta\bs{u}#1}
+
+% - stationary
+\newcommand{\usR}[1][]{u_{#1R}}  
+\newcommand{\uvR}[1][]{\bs{u}_{#1R}}
+
+% - Laplace
+\newcommand{\usL}[2][\css]{\lap{u}_{#2}#1}   
+\newcommand{\ustL}[1][\css]{\lap{u}#1}   
+\newcommand{\uvL}[1][\css]{\lap{\bs{u}}#1}
+\newcommand{\DustL}[1][\css]{\Delta \hat{u}#1}
+
+% - misc
+\newcommand{\ustACT}[1][\cts]{u_{\text{Aktor}}#1}
+
+% - distributed parameter
+\newcommand{\uvzt}[1][\czvt]{\bs{u}#1}
+
+%------------------------------------
+%Output
+%------------------------------------
+\newcommand{\ys}[2][\cts]{y_{#2}#1}
+\newcommand{\yst}[1][\cts]{y#1}
+\newcommand{\ysd}[2][]{y^{\ast}_{#2}#1}
+\newcommand{\ystd}[1][\cts]{y^{\ast}#1}
+\newcommand{\yv}[1][\cts]{\bs{y}#1}
+\newcommand{\yvd}[1][\cts]{\bs{y}^{\ast}#1}
+\newcommand{\Dys}[2][\cts]{\Delta {y}_{#2}#1}
+\newcommand{\Dyst}[1][\cts]{\Delta {y}#1}
+\newcommand{\Dyv}[1][(\ts)]{\Delta\bs{y}#1}
+
+% - stationary
+\newcommand{\ysR}[1][]{{y}_{#1R}}
+\newcommand{\yvR}[1][]{\bs{y}_{#1R}}
+
+% - Laplace
+\newcommand{\ysL}[2][\css]{\lap{y}_{#2}#1}   
+\newcommand{\ystL}[1][\css]{\lap{y}#1}   
+\newcommand{\yvL}[1][\css]{\lap{\bs{y}}#1}
+\newcommand{\DysL}[2][\css]{\Delta \hat{y}_{#2}#1}
+
+% - misc
+\newcommand{\ystSEN}[1][\cts]{y_{\text{Sensor}}#1}
+\newcommand{\ysba}[2][\cts]{\bar{y}_{#2}#1}
+\newcommand{\yvti}[1][\cts]{\tilde{\bs{y}}#1}
+\newcommand{\yvba}[1][\cts]{\bar{\bs{y}}#1}
+
+% - observer
+\newcommand{\ystob}[1][\cts]{\obs{y}#1}
+\newcommand{\yvob}[1][\cts]{\obs{\vec{y}}#1}
+
+% - distributed parameter
+\newcommand{\yvzt}[1][\czvt]{\bs{y}#1}
+
+% - derivatives
+\newcommand{\dys}[3][\cts]{y^{(#2)}_{#3}#1}
+\newcommand{\dyst}[2][\cts]{y^{(#2)}#1}
+\newcommand{\dysd}[3][\cts]{y^{\ast\,(#2)}_{#3}#1}
+\newcommand{\dystd}[2][\cts]{y^{\ast\,(#2)}#1}
+
+%------------------------------------
+%Desired value
+%------------------------------------
+\newcommand{\rs}[2][]{r_{#2}#1}
+\newcommand{\rst}[1][\cts]{r#1}
+\newcommand{\rstd}[1][\cts]{r^\ast#1}
+\newcommand{\rv}[1][\cts]{\vec{r}#1}
+\newcommand{\ws}[2][]{w_{#2}#1}
+\newcommand{\wst}[1][\cts]{w#1}
+\newcommand{\wstd}[1][\cts]{w^\ast#1}
+
+% - Laplace
+\newcommand{\rstL}[1][\css]{\lap{r}#1}
+\newcommand{\wstL}[1][\css]{\lap{w}#1}
+
+%------------------------------------
+%Error
+%------------------------------------
+\newcommand{\es}[2][]{e_{#2}#1}
+\newcommand{\est}[1][\cts]{e#1}
+\newcommand{\esinf}{\est[_\infty]}
+\newcommand{\ev}[1][\cts]{\vec{e}#1}
+
+% - derivatives 
+\newcommand{\dev}[1][\cts]{\dot{\vec{e}}#1}
+
+% - Laplace
+\newcommand{\estL}[1][\css]{\lap{e}#1}
+
+% - derivatives
+\newcommand{\dest}[2][\cts]{e^{(#2)}#1}
+
+%------------------------------------
+%Responses
+%------------------------------------
+\newcommand{\santw}[1][\cts]{h#1}
+\newcommand{\iantw}[1][\cts]{g#1}
+
+%------------------------------------
+%Disturbance
+%------------------------------------
+\newcommand{\dis}[2][]{d_{#2}#1}
+\newcommand{\dist}[1][\cts]{d#1}
+
+% - Laplace
+\newcommand{\distL}[1][\css]{\lap{d}#1}
+
+%------------------------------------
+%Noise
+%------------------------------------
+\newcommand{\noi}[2][]{n_{#2}#1}
+\newcommand{\noit}[1][\cts]{n#1}
+
+% - Laplace
+\newcommand{\noitL}[1][\css]{\lap{n}#1}
+
+%------------------------------------
+%Misc
+%------------------------------------
+\newcommand{\vs}[2][\cts]{v_{#2}#1}
+\newcommand{\vst}[1][\cts]{v#1}
+\newcommand{\vv}[1][\cts]{\bs{v}#1}
+
+
+%------------------------------------
+%Observer
+%------------------------------------
+\newcommand{\xobss}[1][\cts]{\hat{x}#1}    
+\newcommand{\xeobss}[1][\cts]{\hat{x}_e#1}    
+\newcommand{\xoess}[1][\cts]{\tilde{x}#1}    
+\newcommand{\xeoess}[1][\cts]{\tilde{x}_e#1}    
+    
+\newcommand{\yobss}[1][\cts]{\hat{y}#1}
+\newcommand{\yeobss}[1][\cts]{\hat{y}_e#1}
+\newcommand{\yoess}[1][\cts]{\tilde{y}#1}
+\newcommand{\yssd}[1][\cts]{y^{\ast}#1}
+
+%------------------------------------
+%Right hand side vector
+%------------------------------------
+\newcommand{\fs}[2][]{f_{#2}#1}
+\newcommand{\fss}[1][]{f#1}
+\newcommand{\fv}[1][]{\boldsymbol{f}#1}
+\newcommand{\fvex}[1][]{\bar{\boldsymbol{f}}#1}
+\newcommand{\gs}[2][]{g_{#2}#1}
+\newcommand{\gss}[1][]{g#1}
+\newcommand{\gv}[1][]{\boldsymbol{g}#1}
+\newcommand{\hs}[2][]{h_{#2}#1}
+\newcommand{\hsa}[1][]{h#1}
+\newcommand{\hv}[1][]{\boldsymbol{h}#1}
+
+%------------------------------------
+%Dynamics
+%------------------------------------
+\newcommand{\flow}{\varphi}
+\newcommand{\flowv}{\bs{\varphi}}
+
+%====================================
+%Global variables, functions, and coordinates
+%====================================
+
+%Sets and index sets
+\newcommand{\graph}[1]{\text{Graph}(#1)}
+\newcommand{\indS}[2][]{S^{#1}_{{#2}}}
+\newcommand{\indSh}[2][]{{S}^{#1,1}_{{#2}}}
+\newcommand{\indSt}[2][]{{S}^{#1,2}_{{#2}}} 
+\newcommand{\indI}[1][]{I_{#1}}
+
+%Spectral analysis
+\newcommand{\xm}[2][\cts]{x_{#2}#1}
+\newcommand{\xme}[3][\cts]{x_{#2}^{#3}#1}
+\newcommand{\xmS}[2][\cts]{x_{s,#2}#1}
+\newcommand{\xml}[2][\css]{\hat{x}_{#2}#1}
+\newcommand{\um}[2][\cts]{u_{#2}#1}
+\newcommand{\vm}[2][\cts]{v_{#2}#1}
+\newcommand{\vml}[2][\css]{\hat{v}_{#2}#1}
+\newcommand{\umS}[2][]{u_{s,#2}#1}
+\newcommand{\uS}[1][]{u_{s}#1}
+\newcommand{\uml}[2][\css]{\hat{u}_{#2}#1}
+\newcommand{\ym}[2][\cts]{y_{#2}#1}
+\newcommand{\yml}[2][\css]{\hat{y}_{#2}#1}
+\newcommand{\xmkj}[1][\cts]{{\xm[#1]{\inkj}}} 
+\newcommand{\xmkjS}[1][\inkj]{{\xmS[]{#1}}}  %stationary value
+\newcommand{\xmkjl}[1][\css]{{\xml[#1]{\inkj}}} 
+\newcommand{\umkj}[2][\cts]{{\um[#1]{#2}}} 
+\newcommand{\umkjl}[2][\css]{{\uml[#1]{#2}}} 
+\newcommand{\ymkj}[2][\cts]{{\ym[#1]{#2}}} 
+\newcommand{\ymkjl}[2][\css]{{\yml[#1]{#2}}} 
+\newcommand{\baseo}[1][]{\bs{e}_{#1}}
+\newcommand{\basea}[1][]{\bs{f}_{#1}}
+
+%Special functions
+\newcommand{\krondelta}[1]{\delta_{#1}}
+\newcommand{\heavi}{\sigma}
+\newcommand{\dheavi}[1][_{\ini,\inj,\ink}]{\heavi#1}
+\newcommand{\dirac}[1][\cts]{\delta#1}
+%Gevrey function defined in appendix
+\newcommand{\gevffa}[3][\cts]{\mathfunc{g}_{#2,#3}#1}
+\newcommand{\gevffb}[3][\cts]{\mathfunc{h}_{#2,#3}#1}
+\newcommand{\gevfpa}{\tsd}
+\newcommand{\gevfpb}{\omega}
+
+%Integration
+\newcommand{\intd}{{\mathrm{d}}}
+
+%Series 
+\newcommand{\convrad}[1][]{\varrho_{#1}}
+
+%====================================
+%Global vectors
+%====================================
+\newcommand{\novec}[1][0]{\ifthenelse{\equal{#1}{0}}{\mathvecb{n}}{\mathvec{n}^{#1}}} 
+\newcommand{\tavec}[1][0]{\ifthenelse{\equal{#1}{0}}{\mathvecb{t}}{\mathvec{t}^{#1}}}
+
+
+%====================================
+%Physical quantities
+%====================================
+
+%Electrical engineering
+\newcommand{\evolt}[1][\cts]{u#1}
+\newcommand{\ecurr}[1][\cts]{i#1}
+\newcommand{\eresi}{R}
+\newcommand{\ecapa}{C}
+\newcommand{\eindu}{L}
+\newcommand{\echar}[1][\cts]{q#1}
+
+%Mechanical engineering
+\newcommand{\mmas}{m}
+\newcommand{\mdam}{d}
+\newcommand{\msti}{k}
+\newcommand{\mfor}{F}
+\newcommand{\mtor}{M}
+\newcommand{\grav}{g}
+\newcommand{\velo}[1][\cts]{v#1}
+\newcommand{\mgens}[2][\cts]{q_{#2}#1}
+\newcommand{\mgenv}[1][\cts]{\bs{q}#1}
+\newcommand{\mfors}[2][\cts]{Q_{#2}#1}
+\newcommand{\mforv}[1][\cts]{\bs{Q}#1}
+\newcommand{\mlagr}{L}
+\newcommand{\mrayl}{R}
+\newcommand{\mkin}{W_{\text{kin}}}
+\newcommand{\mpot}{W_{\text{pot}}}
+\newcommand{\mMass}{M}
+\newcommand{\mCori}{C}
+\newcommand{\mPot}{\bs{g}}
+\newcommand{\mTraeg}{J}
+\newcommand{\mfric}{r}
+
+%Chemical engineering
+\newcommand{\dens}{\rho}
+\newcommand{\volu}{V}
+\newcommand{\area}{A}
+\newcommand{\moma}{M}
+
+%====================================
+%Spectral analysis
+%====================================
+
+%Eigenproblem 
+\newcommand{\evl}[1][]{\lambda_{#1}}
+\newcommand{\evsymb}{v}
+\newcommand{\avsymb}{w}
+\newcommand{\eve}[1][]{\bs{\evsymb}_{#1}}
+\newcommand{\ave}[1][]{\bs{\evsymb}_{#1}}
+\newcommand{\amult}[1][]{n_{#1}}
+\newcommand{\gmult}[1][]{g_{#1}}
+\newcommand{\ecp}[1][(\evl)]{p#1} %Characteristic polynomial
+\newcommand{\nev}{m}
+\newcommand{\mE}{\mathcal{E}}
+
+%====================================
+%Transfer functions
+%====================================
+
+%Plant
+\newcommand{\tGt}[1][\cts]{{G}#1}
+\newcommand{\tgt}[1][\cts]{{g}#1}
+\newcommand{\tG}[1][\css]{\lap{G}#1}
+\newcommand{\tg}[1][\css]{\lap{g}#1}
+\newcommand{\tgn}[1][\css]{\lap{z}#1}
+\newcommand{\tgnb}[1][\css]{\lap{\bar{z}}#1}
+\newcommand{\tgd}[1][\css]{\lap{n}#1}
+\newcommand{\tgrn}[1][\css]{\lap{z}_{\csymb}#1}
+\newcommand{\tgrd}[1][\css]{\lap{n}_{\csymb}#1}
+\newcommand{\tgrnb}[1][\css]{\lap{\bar{z}}_{\csymb}#1}
+\newcommand{\tgrdb}[1][\css]{\lap{\bar{n}}_{\csymb}#1}
+\newcommand{\tgny}[1][\omega]{\lap{g}(\imag #1)}
+\newcommand{\tgtilde}[1][\css]{\lap{\tilde{g}}#1}
+%
+\newcommand{\tga}[1][]{a_{#1}}
+\newcommand{\tgb}[1][]{b_{#1}}
+\newcommand{\tgbb}[1][]{\bar{b}_{#1}}
+\newcommand{\tgnex}[2][s]{\tgb[0]+\tgb[1]{#1}+\cdots+\tgb[#2-1]{#1}^{#2-1}+\tgb[#2]{#1}^{#2}} 
+\newcommand{\tgdex}[2][s]{\tga[0]+\tga[1]{#1}+\cdots+\tga[#2-1]{#1}^{#2-1}+{#1}^{#2}}
+\newcommand{\tgdexGen}[2][s]{\tga[0]+\tga[1]{#1}+\cdots+\tga[#2-1]{#1}^{#2-1}+\tga[#2]{#1}^{#2}} 
+%
+\newcommand{\tgra}[1][]{c_{#1}}
+\newcommand{\tgrab}[1][]{\bar{c}_{#1}}
+\newcommand{\tgrb}[1][]{d_{#1}}
+\newcommand{\tgrbb}[1][]{\bar{d}_{#1}}
+\newcommand{\tgrnex}[2][s]{\tgrb[0]+\tgrb[1]{#1}+\cdots+\tgrb[#2-1]{#1}^{#2-1}+\tgrb[#2]{#1}^{#2}} 
+\newcommand{\tgrnexb}[2][s]{\tgrbb[0]+\tgrbb[1]{#1}+\cdots+\tgrbb[#2-1]{#1}^{#2-1}+\tgrbb[#2]{#1}^{#2}} 
+\newcommand{\tgrdex}[2][s]{\tgra[0]+\tgra[1]{#1}+\cdots+\tgra[#2-1]{#1}^{#2-1}+{#1}^{#2}}
+\newcommand{\tgrdexb}[2][s]{\tgrab[0]+\tgrab[1]{#1}+\cdots+\tgrab[#2-1]{#1}^{#2-1}+{#1}^{#2}}
+\newcommand{\tgrdexGen}[2][s]{\tgra[0]+\tgra[1]{#1}+\cdots+\tgra[#2-1]{#1}^{#2-1}+\tgra[#2]{#1}^{#2}} 
+%
+\newcommand{\polyp}[1][\css]{\lap{p}#1}
+\newcommand{\polyq}[1][\css]{\lap{q}#1}
+\newcommand{\polyr}[1][\css]{\lap{p}_r#1}
+%
+\newcommand{\tfdes}[1][\css]{\lap{f}#1}
+\newcommand{\tfdesb}[1][]{f_{#1}}
+\newcommand{\tfdesex}[2][s]{\tfdesb[0]+\tfdesb[1]{#1}+\cdots+\tfdesb[#2-1]{#1}^{#2-1}+\tfdesb[#2]{#1}^{#2}}
+%
+\newcommand{\tggain}{V}
+\newcommand{\tgdamp}{\xi}
+\newcommand{\tgtime}{T}
+%
+\newcommand{\pol}[1]{s_{#1}}
+\newcommand{\nul}[1]{s_{#1}}
+
+%Special TFs
+\newcommand{\tf}[2][\css]{\lap{t}_{#2}#1}
+\newcommand{\tfref}[1][\css]{\lap{t}_{\rst[],\yst[]}#1}
+\newcommand{\tfrefn}[1][\css]{\lap{z}_{\rst[],\yst[]}#1}
+\newcommand{\tfrefnb}[1][\css]{\lap{\bar{z}}_{\rst[],\yst[]}#1}
+\newcommand{\tfrefd}[1][\css]{\lap{n}_{\rst[],\yst[]}#1}
+\newcommand{\tfrefu}[1][\css]{\lap{t}_{\rst[],\ust[]}#1}
+\newcommand{\tfdis}[1][\css]{\lap{t}_{\dist[],\yst[]}#1}
+\newcommand{\tfdisu}[1][\css]{\lap{t}_{\dist[],\ust[]}#1}
+\newcommand{\tfnoi}[1][\css]{\lap{t}_{\noit[],\yst[]}#1}
+\newcommand{\tfnoiu}[1][\css]{\lap{t}_{\noit[],\ust[]}#1}
+\newcommand{\osymb}{l}
+\newcommand{\tfopen}[1][\css]{\lap{\osymb}#1}
+\newcommand{\tfsens}[1][\css]{\lap{s}#1}
+
+%Controller
+\newcommand{\csymb}{r}
+\newcommand{\tgr}[1][\css]{{\tg[_{\csymb}#1]}}
+
+%Disturbance, noise, model error, prefilter
+\newcommand{\dsymb}{d}
+\newcommand{\tgdis}[1][\css]{{\tg[_{\dsymb}#1]}}
+\newcommand{\tgerr}[1][\css]{{\Delta\tg[#1]}}
+\newcommand{\vsymb}{v}
+\newcommand{\tgv}[1][\css]{{\tg[_{\vsymb}#1]}}
+\newcommand{\tgvn}[1][\css]{\lap{z}_{\vsymb}#1}
+\newcommand{\tgvd}[1][\css]{\lap{n}_{\vsymb}#1}
+\newcommand{\tgva}[1][]{g_{#1}}
+\newcommand{\tgvb}[1][]{h_{#1}}
+\newcommand{\tgvbb}[1][]{\bar{h}_{#1}}
+\newcommand{\tgvnex}[2][s]{\tgvb[0]+\tgvb[1]{#1}+\cdots+\tgvb[#2-1]{#1}^{#2-1}+\tgvb[#2]{#1}^{#2}}
+\newcommand{\tgvnexb}[2][s]{\tgvbb[0]+\tgvbb[1]{#1}+\cdots+\tgvbb[#2-1]{#1}^{#2-1}+\tgvbb[#2]{#1}^{#2}} 
+\newcommand{\tgvdex}[2][s]{\tgva[0]+\tgva[1]{#1}+\cdots+\tgva[#2-1]{#1}^{#2-1}+\tgva[#2]{#1}^{#2}}
+
+%Stability criteria
+\newcommand{\swa}[1][\tgny]{\Delta\arg(#1)} %stetige Winkeländerung
+\newcommand{\swab}[1][\tgny]{\Delta\arg\bigl(#1\bigr)} 
+\newcommand{\Swa}[1][\tgny]{\Delta\arg\left(#1\right)}
+\newcommand{\phaseres}{\phi}
+
+%Zeros
+\newcommand{\polyzero}[2][]{N_{#1}#2}
+
+%====================================
+%Control - frequency domain
+%====================================
+\newcommand{\Pgain}{\tggain_P}
+\newcommand{\Dgain}{\tggain_D}
+\newcommand{\Igain}{\tggain_I}
+\newcommand{\DRgain}{\tgtime_R}
+\newcommand{\PTgain}{\tgtime_P}
+\newcommand{\DTgain}{\tgtime_D}
+\newcommand{\ITgain}{\tgtime_I}
+\newcommand{\delay}{\tgtime_{\ts}}
+
+%====================================
+%FKL
+%====================================
+\newcommand{\trise}{\ts_{r}}
+\newcommand{\maxamp}{M}
+\newcommand{\prozueb}{\text{\textit{\"u}}}
+\newcommand{\dfreq}{\omega_c}
+
+
+%====================================
+%Control - time domain
+%====================================
+
+%====================================
+%Ackermann 
+%====================================
+\newcommand{\ackpolyco}[1]{p_{#1}}
+\newcommand{\ackpolydes}[2][\evl]{\ackpolyco{0}+\ackpolyco{1}#1+\ldots+\ackpolyco{#2-1}#1^{#2-1}+#1^{#2}}
+
+%====================================
+%Ackermann - observer
+%====================================
+\newcommand{\ackpolyobco}[1]{\obs{p}_{#1}}
+\newcommand{\ackpolyobdes}[2][\evl]{\ackpolyobco{0}+\ackpolyobco{1}#1+\ldots+\ackpolyobco{#2-1}#1^{#2-1}+#1^{#2}}
+\newcommand{\ecpob}[1][(\evl)]{\obs{p}#1} %Characteristic polynomial
+
+%====================================
+%EA decoupling 
+%====================================
+\newcommand{\relgrad}{r}
+\newcommand{\relgradv}[1]{r_{#1}}
+
+%====================================
+%Feedforward / tracking
+%====================================
+\newcommand{\ffvar}{\zeta}
+
+%====================================
+%Linear, time-varying
+%====================================
+\newcommand{\tgat}[1][]{\trafo{a}_{#1}\cts}
+\newcommand{\tgats}[2][]{\trafo{a}_{#1}#2}
+\newcommand{\tgast}[2][]{\trafo{a}_{#1}^{#2}\cts}
+\newcommand{\tgavt}[1][\cts]{\trafo{\vec{a}}#1}
+\newcommand{\tgbs}[1][]{\trafo{b}_{#1}}
+\newcommand{\tgbt}[1][]{\trafo{b}_{#1}\cts}
+\newcommand{\tgct}[1][]{\trafo{c}_{#1}\cts}
+\newcommand{\tgctb}[2][]{\trafo{c}_{#1}^{#2}\cts}
+\newcommand{\tgdt}[1][]{\trafo{d}_{#1}\cts}
+
+%====================================
+%Differential geometry
+%====================================
+\newcommand{\Man}[1][]{\mathcal{M}_{#1}}
+\newcommand{\sV}[1][]{V_{#1}}
+\newcommand{\abb}[1][]{\bs{\varphi}_{#1}}
+\newcommand{\abbs}[2][]{{\varphi}_{#1}^{#2}}
+\newcommand{\abbi}[1][]{\bs{\varphi}^{-1}_{#1}}
+\newcommand{\TpM}[1][\vec{p}]{\mathcal{T}_{#1}\Man}
+\newcommand{\TpMb}[2][\vec{p}]{\mathcal{T}_{#1}#2}
+\newcommand{\vTan}[1][]{\bs{v}_{#1}}
+\newcommand{\vTans}[2][]{{v}_{#1}^{#2}}
+\newcommand{\vFie}{\bs{\mathfrak{v}}}
+\newcommand{\Dis}[1][\vec{p}]{\Delta_{#1}}
+\newcommand{\onef}{\mathrm{d}}
+
+%====================================
+%Nonlinear systems
+%====================================
+\newcommand{\nTrafo}{\vec{\theta}}
+\newcommand{\nTrafoi}{\vec{\theta}^{-1}}
+\newcommand{\nDiff}{\nTrafo_{\ast}}
+\newcommand{\Lf}[1][{\fv[]}]{L_{#1}}
+\newcommand{\Lfn}[2][{\fv[]}]{L_{#1}^{#2}}
+\newcommand{\Lb}[2]{[#1,#2]}
+\DeclareMathOperator{\opad}{ad}
+\newcommand{\adf}[1][{\fv[]}]{\opad_{#1}}
+
+%E/A linearisation
+\newcommand{\xvb}{\bar{\xv[]}}
+\newcommand{\lds}[2][\cts]{\xi_{#2}#1}
+\newcommand{\dlds}[2][\cts]{\dot{\xi}_{#2}#1}
+\newcommand{\ldv}[1][\cts]{\vec{\xi}#1}
+\newcommand{\dldv}[1][\cts]{\dot{\vec{\xi}}#1}
+\newcommand{\zds}[2][\cts]{\eta_{#2}#1}
+\newcommand{\dzds}[2][\cts]{\dot{\eta}_{#2}#1}
+\newcommand{\zdv}[1][\cts]{\vec{\eta}#1}
+\newcommand{\dzdv}[1][\cts]{\dot{\vec{\eta}}#1}
+\newcommand{\dphi}[2][\cxv]{\Phi_{#2}#1}
+\newcommand{\dPhi}[1][\cxv]{\bs{\Phi}#1}
+\newcommand{\dPhii}[1][\cxvT]{\bs{\Phi}^{-1}#1}
+
+%E/Z linearization
+\newcommand{\los}[2][\cxv]{\lambda_{#2}#1}
+
+%MIMO
+\newcommand{\mCoup}[1][\cxv]{{B}#1} %Coupling matrix
+
+%Flatness
+\newcommand{\fls}[2][\cts]{{z}_{#2}#1}
+\newcommand{\flsd}[2][\cts]{{z}^{\ast}_{#2}#1}
+\newcommand{\flsR}[1][]{{z}_{#1R}}
+\newcommand{\flv}[1][\cts]{\bs{z}#1}
+\newcommand{\flvd}[1][\cts]{\bs{z}^\ast#1}
+\newcommand{\flvR}[1][]{\bs{z}_{#1R}}
+\newcommand{\dfls}[3][\cts]{{z}^{(#3)}_{#2}#1}
+\newcommand{\dflsd}[3][\cts]{{z}^{\ast\,(#3)}_{#2}#1}
+\newcommand{\dflv}[2][\cts]{\bs{z}^{(#2)}#1}
+\newcommand{\dflvd}[2][\cts]{\bs{z}^{\ast\,(#2)}#1}
+
+%====================================
+%Optimization
+%====================================
+\newcommand{\xsopt}[2][\cts]{{x}^\ast_{#2}#1}
+\newcommand{\dxsopt}[2][\cts]{\dot{x}^\ast_{#2}#1}
+\newcommand{\xstopt}[1][\cts]{{x}^\ast#1}
+\newcommand{\xvopt}[1][\cts]{\bs{x}^\ast#1}
+\newcommand{\dxvopt}[1][(\ts)]{\dot{\bs{x}}^\ast#1}
+\newcommand{\cxvopt}{(\bs{x}^\ast)}
+\newcommand{\tseopt}{\tse^\ast}
+\newcommand{\usopt}[2][\cts]{{u}^\ast_{#2}#1}
+\newcommand{\uvopt}[1][\cts]{\bs{u}^\ast#1}
+\newcommand{\duvopt}[1][\cts]{\dot{\bs{u}}^\ast#1}
+\newcommand{\var}{\delta}
+
+
+%Special points in time
+\newcommand{\tseind}{e}
+\newcommand{\tse}{\ts_{\tseind}}
+%%\newcommand{\tsfinal}{\ts_f}
+
+%Criteria
+\newcommand{\sJf}[1][\cxv]{f#1}
+\newcommand{\dJf}[1][\cuv]{J#1}
+\newcommand{\dJfp}{\varphi}
+\newcommand{\dJfl}{l}
+\newcommand{\dEBs}{g}
+\newcommand{\dEBv}{\bs{\dEBs}}
+
+%Numerics
+\newcommand{\convorder}{p}
+\newcommand{\asyerrcon}{\mu}
+
+%Line search
+\newcommand{\sedirv}[1][_\ink]{\vec{s}#1}
+\newcommand{\stelen}[1][_\ink]{\alpha#1}
+\newcommand{\stelenv}[1][_\ink]{\vec{\eta}#1}
+\newcommand{\vecp}{\vec{p}}
+\newcommand{\vecq}{\vec{q}}
+
+%Trust region
+\newcommand{\mss}[1]{m(#1)}
+\newcommand{\sedirvopt}[1][_\ink]{\vec{s}^{\ast}#1}
+\newcommand{\trustreg}[1][\ink]{\Delta_{#1}}
+\newcommand{\trustratio}[1][\sedirv]{\varrho(#1)}
+
+%Constrained optimization
+\newcommand{\aieqset}[1][\cxv]{\mathcal{A}_{\text{ieq}}#1}
+\newcommand{\Seqc}{\Man} %{S_{\text{eq}}}
+\newcommand{\dss}[2][]{{d}_{#2}#1}
+\newcommand{\dv}[1][]{\vec{d}#1}
+\newcommand{\TxoptM}{\TpM[{\xvopt[]}]}
+\newcommand{\lagf}{l}
+\newcommand{\mlagf}{L}
+\newcommand{\mlagfR}[1][\TxoptM]{\mlagf_{#1}} 
+\newcommand{\lagms}[2][\cts]{\lambda_{#2}#1}
+\newcommand{\dlagms}[2][\cts]{\dot{\lambda}_{#2}#1}
+\newcommand{\lagmsp}[2][\cts]{\bar{\lambda}_{#2}#1}
+\newcommand{\dlagmsp}[2][\cts]{\dot{\bar{\lambda}}_{#2}#1} 
+\newcommand{\lagmsopt}[2][\cts]{\lambda^\ast_{#2}#1}
+\newcommand{\dlagmsopt}[2][\cts]{\dot{\lambda}^\ast_{#2}#1}
+\newcommand{\lagmspopt}[2][\cts]{\bar{\lambda}^\ast_{#2}#1} 
+\newcommand{\dlagmspopt}[2][\cts]{\dot{\bar{\lambda}}^\ast_{#2}#1} 
+\newcommand{\lagmv}[1][\cts]{\vec{\lambda}#1}
+\newcommand{\lagmvp}[1][\cts]{\bar{\vec{\lambda}}#1}
+\newcommand{\dlagmv}[1][\cts]{\dot{\vec{\lambda}}#1}
+\newcommand{\dlagmvp}[1][\cts]{\dot{\bar{\vec{\lambda}}}#1}
+\newcommand{\dlagmvT}[1][\cts]{{\dot{\vec{\lambda}}}{%
+    \raise0.75pt\hbox{$^{T}$}}#1}
+\newcommand{\lagmvopt}[1][\cts]{\vec{\lambda}^\ast#1}
+\newcommand{\lagmvpopt}[1][\cts]{\bar{\vec{\lambda}}^\ast#1}
+\newcommand{\dlagmvopt}[1][\cts]{\dot{\vec{\lambda}}^\ast#1}
+\newcommand{\dlagmvpopt}[1][\cts]{\dot{\bar{\vec{\lambda}}}^\ast#1}
+\newcommand{\lagmvoptb}[2][\cts]{\vec{\lambda}^{\ast#2}#1}
+\newcommand{\lagmsb}[2][\cts]{\mu_{#2}#1}
+\newcommand{\lagmsbopt}[2][\cts]{\mu^\ast_{#2}#1}
+\newcommand{\lagmvb}[1][\cts]{\vec{\mu}#1}
+\newcommand{\dlagmvb}[1][\cts]{\dot{\vec{\mu}}#1}
+\newcommand{\lagmvbopt}[1][\cts]{\vec{\mu}^\ast#1}
+\newcommand{\lagmvboptb}[2][\cts]{\vec{\mu}^{\ast#2}#1}
+\newcommand{\cxvlbopt}{(\xvopt[],\lagmvopt[],\lagmvbopt[])}
+
+%Active set methods
+\newcommand{\wacmset}[1][]{\mathcal{W}_{\text{act}#1}}
+
+%Penalty and interior-point methods
+\newcommand{\penf}{P}
+\newcommand{\barf}{B}
+
+%SQP
+\newcommand{\mpvopt}[1][\cts]{\vec{p}^\ast#1}
+
+%Dynamic optimization
+\newcommand{\uslb}[2][]{{\us[^{-}#1]{#2}}}
+\newcommand{\usub}[2][]{{\us[^{+}#1]{#2}}}
+\newcommand{\xslb}[2][]{{\xs[^{-}#1]{#2}}}
+\newcommand{\xsub}[2][]{{\xs[^{+}#1]{#2}}}
+
+\newcommand{\hami}[1][]{H#1}
+\newcommand{\dGf}{G}
+
+%Pontryagin
+\newcommand{\xUpw}{\mathcal{\xU}}
+\newcommand{\xvex}[1][\cts]{\bar{\vec{x}}#1}
+\newcommand{\dxvex}[1][\cts]{\dot{\bar{\vec{x}}}#1}
+\newcommand{\xvexopt}[1][\cts]{\bar{\vec{x}}^\ast#1}
+\newcommand{\dxvexopt}[1][\cts]{\dot{\bar{\vec{x}}}^\ast#1}
+\newcommand{\swi}[1][\cts]{\zeta#1}
+\newcommand{\swiopt}[1][\cts]{\zeta^\ast#1}
+
+%Boundary value problems
+\newcommand{\idisc}{N}
+\newcommand{\uvh}[1][\cts]{\hat{\vec{u}}#1}
+\newcommand{\xvh}[1][\cts]{\hat{\vec{x}}#1}
+\newcommand{\xvhj}[2][\cts]{%
+  \xvh[\raise0.75pt\hbox{$^{#2}$}#1]}
+\newcommand{\dxvh}[1][\cts]{\dot{\!\hat{\vec{x}}}#1}
+\newcommand{\dxvhj}[2][\cts]{%
+  \dxvh[\raise0.75pt\hbox{$^{#2}$}#1]}
+\newcommand{\lagmvh}[1][\cts]{\hat{\vec{\lambda}}#1}
+\newcommand{\lagmvhj}[2][\cts]{%
+  \lagmvh[\raise0.75pt\hbox{$^{#2}$}#1]}
+\newcommand{\dlagmvh}[1][\cts]{\dot{\!\hat{\vec{\lambda}}}#1}
+\newcommand{\dlagmvhj}[2][\cts]{%
+  \dlagmvh[\raise0.75pt\hbox{$^{#2}$}#1]}
+
+

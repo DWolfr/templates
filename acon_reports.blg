@@ -1,0 +1,5 @@
+[0] Config.pm:302> INFO - This is Biber 2.10
+[0] Config.pm:305> INFO - Logfile is 'acon_reports.blg'
+[26] biber:313> INFO - === Mo Jan 15, 2018, 20:39:10
+[76] Utils.pm:209> ERROR - Cannot find control file 'acon_reports.bcf'! - did you pass the "backend=biber" option to BibLaTeX?
+[76] Biber.pm:114> INFO - ERRORS: 1

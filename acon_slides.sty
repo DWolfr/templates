@@ -1,0 +1,1252 @@
+%% cleanthesis.sty
+%% Copyright 2015 R. Langner
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status `maintained'.
+%
+% The Current Maintainer of this work is R. Langner.
+%
+% This work consists of all files listed in MANIFEST.md.
+%
+%
+% **************************************************
+%
+% ACON Reports derived from Clean Thesis
+%
+% **************************************************
+%
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{acon_reports}[2017/10/19 v0.1 Reports, thesis and lecture notes style derived from cleanthesis]
+%
+% **************************************************
+% Package options
+% **************************************************
+%
+% -- process all available package options
+%
+%
+% The xkeyval package enables us to handle for example key-value pairs
+% in an easy way
+\RequirePackage{xkeyval}
+
+% OPTION sansserif
+% --> values = true|false
+\define@boolkey[ct]{cthesis}{sansserif}[true]{}
+\setkeys[ct]{cthesis}{sansserif=false}
+
+% OPTION hangfigurecaption
+% --> values = true|false
+\define@boolkey[ct]{cthesis}{hangfigurecaption}[true]{}
+\setkeys[ct]{cthesis}{hangfigurecaption=false}
+
+% OPTION hangsection
+% --> values = true|false
+\define@boolkey[ct]{cthesis}{hangsection}[true]{}
+\setkeys[ct]{cthesis}{hangsection=true}
+
+% OPTION hangsubsection
+% --> values = true|false
+\define@boolkey[ct]{cthesis}{hangsubsection}[true]{}
+\setkeys[ct]{cthesis}{hangsubsection=true}
+
+% OPTION hangsubsubsection
+% --> values = true|false
+\define@boolkey[ct]{cthesis}{hangsubsubsection}[true]{}
+\setkeys[ct]{cthesis}{hangsubsubsection=true}
+
+% OPTION figuresep
+% --> values = none|colon|period|space|quad|endash
+\define@choicekey*[ct]{cthesis}{figuresep}{none,colon,period,space,quad,newline,endash}[endash]{\def\cthesis@figuresep{#1}}
+\setkeys[ct]{cthesis}{figuresep=endash}
+
+% OPTION colorize
+% --> values = full|reduced|bw
+\define@choicekey*[ct]{cthesis}{colorize}[\val\colorizenr]{full,reduced,bw}[full]{\def\cthesis@colorize{\colorizenr}}
+\setkeys[ct]{cthesis}{colorize=full}
+
+% OPTION colortheme
+% --> values = bluemagenta|bluegreen
+\define@choicekey*[ct]{cthesis}{colortheme}[\val\themenr]{bluemagenta,bluegreen}[bluemagenta]{\def\cthesis@colortheme{\themenr}}
+\setkeys[ct]{cthesis}{colortheme=bluemagenta}
+
+% OPTION bibsys
+% --> values = biber|bibtex
+\define@choicekey*[ct]{cthesis}{bibsys}[\val\bibsysnr]{biber,bibtex}[bibtex]{\def\cthesis@bibsys{#1}}
+\setkeys[ct]{cthesis}{bibsys=bibtex}
+
+% OPTION bibfile
+% --> values = file name of your bibtex file
+\define@key[ct]{cthesis}{bibfile}[bib-refs]{\def\cthesis@bibfile{#1}}
+\setkeys[ct]{cthesis}{bibfile=bib-refs}
+
+% OPTION refsection
+% --> values = 
+\define@key[ct]{cthesis}{refsection}[chapter]{\def\cthesis@refsection{#1}}
+\setkeys[ct]{cthesis}{refsection=chapter}
+
+% OPTION bibstyle
+% --> values = alphabetic|numeric|authoryear
+\define@choicekey*[ct]{cthesis}{bibstyle}[\val\bibstylenr]{alphabetic,numeric,authoryear}[alphabetic]{\def\cthesis@bibstyle{#1}}
+\setkeys[ct]{cthesis}{bibstyle=alphabetic}
+
+% OPTION language
+\let\switcht@@therlang\relax
+\let\svlanginfo\relax
+\def\ds@deutsch{\def\switcht@@therlang{\switcht@deutsch}%
+\gdef\svlanginfo{\typeout{Deutschsprachig!}\global\let\svlanginfo\relax}}
+\@ifpackageloaded{babel}{%
+\@ifundefined{extrasgerman}{}{\addto\extrasgerman{\switcht@deutsch}}%
+\@ifundefined{extrasngerman}{}{\addto\extrasngerman{\switcht@deutsch}}%
+}{\switcht@@therlang}%
+
+\DeclareOptionX*{
+	\PackageWarning{cleanthesis}{Unknown option ‘\CurrentOption’}%
+}
+
+\ProcessOptionsX[ct]<cthesis>
+
+
+% **************************************************
+% Color Definitions
+% **************************************************
+%
+% -- defines color themes and color commands
+%
+%
+% The xcolor package enables us to create/handle/name different colors
+\RequirePackage[dvipsnames]{xcolor}
+
+% updates all colors regarding the defined main and accessory
+% color, as well as the defined colorize mode (full, reduced, bw)
+\long\def\ct@cthesis@updatecolors{%
+	% sets all colors (like colorize == full)
+	% -- footer colors
+	\colorlet{ctcolorfooterpage}{ctcolorblack}
+	\colorlet{ctcolorfooterline}{ctcolormain}
+	\colorlet{ctcolorfootermark}{ctcolorblack}
+	\colorlet{ctcolorfootertitle}{ctcolormain}
+	% -- sectioning colors
+	\colorlet{ctcolortitle}{ctcolormain}
+	\colorlet{ctcolorpartnum}{ctcolormain}
+	\colorlet{ctcolorpartline}{ctcolorblack}
+	\colorlet{ctcolorparttext}{ctcolorblack}
+	\colorlet{ctcolorchapternum}{ctcolormain}
+	\colorlet{ctcolorchapterline}{ctcolormain}
+	\colorlet{ctcolorsection}{ctcolormain}
+	\colorlet{ctcolorsubsection}{ctcolormain}
+        \colorlet{ctcolorsubsubsection}{ctcolormain}
+	\colorlet{ctcolorparagraph}{ctcolorblack}
+	% --> text colors
+	\colorlet{ctcolorfloatlabel}{ctcoloraccessory}
+	\colorlet{ctcolorlistlabel}{ctcolormain}
+
+	\ifcase\cthesis@colorize
+		% case = 0 (colorize == full)
+		% do nothing
+	\or
+		% case = 1 (colorize == reduced)
+		% --> footer colors
+		\colorlet{ctcolorfooterline}{ctcolorgray}
+		\colorlet{ctcolorfootertitle}{ctcolorgray}
+		% --> sectioning colors
+		\colorlet{ctcolorsubsection}{ctcolorblack}
+		\colorlet{ctcolorpartnum}{ctcolorblack}
+		% --> text colors
+		\colorlet{ctcolorlistlabel}{ctcolorblack}
+	\or
+		% case = 2 (colorize == bw)
+		% --> footer colors
+		\colorlet{ctcolorfooterline}{ctcolorgray}
+		\colorlet{ctcolorfootertitle}{ctcolorgray}
+		% --> sectioning colors
+		\colorlet{ctcolortitle}{ctcolorblack}
+		\colorlet{ctcolorpartnum}{ctcolorblack}
+		\colorlet{ctcolorchapternum}{ctcolorblack}
+		\colorlet{ctcolorchapterline}{ctcolorblack}
+		\colorlet{ctcolorsection}{ctcolorblack}
+		\colorlet{ctcolorsubsection}{ctcolorblack}
+                \colorlet{ctcolorsubsubsection}{ctcolorblack}
+		% --> text colors
+		\colorlet{ctcolorfloatlabel}{ctcolorblack}
+		\colorlet{ctcolorlistlabel}{ctcolorblack}
+	\else
+	\fi
+}
+
+% sets the main and accessory color for the document
+\def\cthesissetcolor#1#2#3{%
+	\definecolor{ctcolormain}{#1}{#2}%
+	\definecolor{ctcoloraccessory}{#1}{#3}%
+	\ct@cthesis@updatecolors%
+}
+
+% sets the blue-magenta color theme (blue/magenta)
+\def\cthesissetcolorbluemagenta{%
+	\cthesissetcolor{cmyk}{1, .50, .10, .01}{.18, .98, .18, 0}%
+}
+
+% sets the blue-green color theme (blue/green)
+\def\cthesissetcolorbluegreen{%
+	\cthesissetcolor{cmyk}{.61, .47, .03, 0}{.48, .05, .91, 0}%
+}
+
+% defines general colors
+\definecolor{ctcolorblack}{gray}{0}
+\definecolor{ctcolorgray}{gray}{.5}
+\definecolor{ctcolorgraylight}{gray}{.8}
+
+% sets the color theme regarding the given package option colortheme
+\ifcase\cthesis@colortheme
+	% case 0 (colortheme == bluemagenta)
+	\cthesissetcolorbluemagenta
+\or
+	% case 1 (colortheme == bluegreen)
+	\cthesissetcolorbluegreen
+\else
+	% all other cases
+	\cthesissetcolorbluemagenta
+\fi
+
+% define colors for boxed environments
+\definecolor{shadecolor}{gray}{.85}%
+\definecolor{whitecolor}{gray}{1}%
+\definecolor{tintedcolor}{gray}{.80}%
+% \definecolor{definitioncolor}{rgb}{0.529,0.808,0.922}%
+ \colorlet{definitioncolor}{ctcolormain}
+%\colorlet{definitioncolor}{ctcolorgraylight}
+\definecolor{exercisecolor}{rgb}{0.496078431372549,0.984313725490196,0.396078431372549}%
+\definecolor{solutioncolor}{rgb}{0.596078431372549,0.984313725490196,0.596078431372549}%
+\definecolor{emptyspacecolor}{gray}{0.8}%
+\definecolor{lightcoralcolor}{rgb}{0.941176470588235,0.501960784313725,0.501960784313725}
+\definecolor{theoremcolor}{rgb}{0.94,0.5,0.5}
+\definecolor{lemmacolor}{rgb}{0.94,0.5,0.5}
+%\definecolor{theoremcolor}{rgb}{0.529,0.808,0.922}
+%\definecolor{lemmacolor}{rgb}{0.529,0.808,0.922}
+\definecolor{eqncolor}{rgb}{0.8,0.8,0.8}
+%\definecolor{importantcolor}{rgb}{0.941,0.502,0.502}
+\definecolor{importantcolor}{rgb}{1,1,0.6}
+\definecolor{remarkcolor}{rgb}{0.8,0.8,0.8}%{1,1,0.6}
+\definecolor{examplecolor}{rgb}{0.8,0.8,0.8}
+
+%General Definitions
+\definecolor{myred}{rgb}{1,0,0}
+\definecolor{myblue}{rgb}{0,0,1}
+\definecolor{mygray}{gray}{0.2} %{0.5,0.5,0.6}
+\definecolor{mywhite}{rgb}{1,1,1}
+\definecolor{mylgray}{rgb}{0.8,0.8,0.8}
+\definecolor{mymagenta}{rgb}{1,0,1} %magenta
+\definecolor{myorange}{rgb}{1,0.5,0}
+\definecolor{myyellow}{rgb}{1,0.9,0}
+\definecolor{myblack}{rgb}{0,0,0}
+\definecolor{myaqua}{rgb}{0,0.5,0.5}
+\definecolor{mygreen}{rgb}{0.0,0.9,0.1}
+\definecolor{rtred}{rgb}{0.73,0.07,0.17}
+\definecolor{rtblue}{rgb}{0.168627450980392,0.192156862745098,0.505882352941176}
+\definecolor{rtviolet}{rgb}{0.9,0.0,0.9}
+\definecolor{rtgreen}{rgb}{0.0,0.5,0.0}
+\definecolor{rtgray}{rgb}{0.482,0.482,0.482}
+\definecolor{colebox}{rgb}{0.8,0.8,0.8}
+
+%Color Abbreviations
+\newcommand{\blue}[1]{\textcolor{rtblue}{#1}}
+\newcommand{\red}[1]{\textcolor{myred}{#1}}
+\newcommand{\magenta}[1]{\textcolor{rtviolet}{#1}}
+\newcommand{\gray}[1]{\textcolor{rtgray}{#1}}
+\newcommand{\green}[1]{\textcolor{rtgreen}{#1}}
+\newcommand{\lgreen}[1]{\textcolor{mygreen}{#1}}
+\newcommand{\aqua}[1]{\textcolor{myaqua}{#1}}
+\newcommand{\white}[1]{\textcolor{mywhite}{#1}}
+\newcommand{\lgray}[1]{\textcolor{mylgray}{#1}}
+\newcommand{\orange}[1]{\textcolor{myorange}{#1}}
+\newcommand{\yellow}[1]{\textcolor{myyellow}{#1}}
+\newcommand{\black}[1]{\textcolor{myblack}{#1}}
+\newcommand{\artred}[1]{\textcolor{rtred}{#1}}
+\newcommand{\artblue}[1]{\textcolor{rtblue}{#1}}
+
+% **************************************************
+% Font Definitions (see http://www.tug.dk/FontCatalogue/)
+% **************************************************
+\RequirePackage[T1]{fontenc}		% font types and character verification
+\RequirePackage{marvosym}
+% \ifthenelse{\boolean{@sansserif}}%
+\ifct@cthesis@sansserif
+%	{%
+		% Using sans-serif fonts
+		%
+		%\RequirePackage{helvet}	% Font:	Helvetica
+		%\RequirePackage{nimbus}	% Font:	Nimbus Sans, a clone of the Helvetica
+		\RequirePackage{tgheros}	% Font:	TEX Gyre Heros
+		%\RequirePackage{libertine}	% Font:	Biolinum, the standard sans serif typeface with the Libertine package
+		%\RequirePackage[scaled]{berasans} % Font:	Bera Sans, a a version of Bitstream Vera Sans slightly enhanced
+		\renewcommand*\familydefault{\sfdefault}%
+%	}{%
+\else
+		% Using serif fonts
+		%
+		%\RequirePackage{lmodern}	% font set: Latin Modern
+		%\RequirePackage{charter}	% font set: Charter
+		\RequirePackage{fourier}	% font set: (basically improved utopia)
+         % }
+\fi
+
+% **************************************************
+% Load Packages
+% **************************************************
+\RequirePackage{fixltx2e}			% packages provides fixes to LaTeX2e
+\RequirePackage{microtype}			% typographic tuning
+\RequirePackage{setspace}			% for line spacing, e.g. \onehalfspacing
+\RequirePackage[]{graphicx}			% graphics import features
+\RequirePackage{fancyhdr}			% for header and footer modifications
+\RequirePackage{enumitem}			% for simple list modifications
+\RequirePackage{blindtext}		% package for blind text
+\RequirePackage{textcomp}			% different symbols
+\RequirePackage{hyperref} 			% interactive link inside the document
+
+%
+\RequirePackage[					% modify figure and table captions
+format=hang,
+font={small}, 					% 	- small font size
+justification=justified,
+labelfont={bf,sf},% 	- label in bold, sans-serif and magenta
+labelsep=\cthesis@figuresep,				% 	- separator: none, colon, period, space, quad, newline, endash
+singlelinecheck=false,			% 	- no centered
+% single-lined captions
+tableposition=bottom,
+]{caption} %[2008/08/24]
+%\ifthenelse{\boolean{@figurecaptionoutside}}%
+\ifct@cthesis@hangfigurecaption
+%	{%
+		\DeclareCaptionFormat{llap}{\llap{#1#2}#3\par}%
+		\captionsetup{format=llap,labelsep=quad,singlelinecheck=false}%
+%	}{}
+\fi
+%
+\RequirePackage[					% page layout modifications
+papersize={185.625mm,297mm},                     % 16x10 
+%papersize={167.0625mm,297mm},                    % 16x9 
+       % paper=a4paper,					% 	- use A4 paper size
+       % scale={0.86,0.94},				% 	- total body size (h,v)
+       % scale={0.86,0.94},				% 	- total body size (h,v)
+       landscape,
+       nohead,							% 	- no header
+       includefoot,					% 	- include footer space
+       includemp,						% 	- include side note space
+       bindingoffset=0.0cm,			% 	- binding correction
+       top=1.0cm,						% 	- total body: top margin
+       left=1.5cm,					% 	- total body: left margin (odd pages)
+       right=1.5cm,					% 	- total body: right margin (odd pages)
+       bottom=0.5cm,					% 	- total body: bottom margin
+       marginparwidth=0cm,			% 	- width for side note
+       marginparsep=0pt,				% 	- space between notes and body text (content)
+       footskip=1cm,					% 	- footer skip size
+]{geometry}
+%
+\RequirePackage[					% advanced quotes
+	strict=true,					% 	- warning are errors now
+	style=german					% 	- german quotes
+]{csquotes}
+%
+\RequirePackage[					% use biblatex for bibliography
+        backend=\cthesis@bibsys,		% 	- use biber backend (bibtex replacement) or bibtex
+	bibencoding=utf8,				% 	- use auto file encode
+	style=\cthesis@bibstyle,		% 	- use alphabetic (or numeric) bib style
+        refsection=\cthesis@refsection,
+        natbib=true,					% 	- allow natbib commands
+	hyperref=true,					% 	- activate hyperref support
+	backref=true,					% 	- activate backrefs
+	isbn=false,						% 	- don't show isbn tags
+	url=true,						% 	- show url tags
+	doi=false,						% 	- don't show doi tags
+	urldate=long,					% 	- display type for dates
+	maxnames=3,%
+	minnames=1,%
+	maxbibnames=5,%
+	minbibnames=3,%
+	maxcitenames=2,%
+	mincitenames=1%
+]{biblatex}
+\bibliography{\cthesis@bibfile}
+\DefineBibliographyStrings{ngerman}{%
+	andothers = {{et\,al\adddot}}, % 'et al.' instead of 'u.a.'
+	backrefpage = {{zitiert auf Seite}},%
+	backrefpages = {{zitiert auf den Seiten}},%
+}
+
+% **************************************************
+% Text Format
+% **************************************************
+\singlespacing
+%\onehalfspacing
+%\setstretch{1.0}				% value for line spacing, use \setstretch{} or \singlespacing or \onehalfspacing or \doublespacing
+\setlength{\parindent}{0em}			% value for paragraph indentation
+\setlength{\parskip}{2ex}
+\clubpenalty = 0				% prevent single lines at the beginning of a paragraph 
+\widowpenalty = 0				% prevent single lines at the end of a paragraph 
+\displaywidowpenalty = 0		%
+
+% **************************************************
+% Length Definitions
+% **************************************************
+\setlength\belowcaptionskip{-\topsep}
+\setlength\abovecaptionskip{\topsep}
+
+% **************************************************
+% List Definitions
+% **************************************************
+\newenvironment{my_list}%
+	{\begin{enumerate}%
+		\setlength{\itemsep}{1pt}%
+		\setlength{\parskip}{0pt}%
+		\setlength{\parsep}{0pt}%
+	}%
+	{\end{enumerate}}
+%
+\newenvironment{my_list_num}
+	{\begin{enumerate}[topsep=-5pt,partopsep=0pt,parsep=2pt,itemsep=3pt]}
+	{\end{enumerate}}%
+
+\newenvironment{my_list_item}
+	{\begin{itemize}[topsep=-5pt,partopsep=0pt,parsep=2pt,itemsep=3pt]}
+	{\end{itemize}}%
+
+\newenvironment{ct_version_list}
+	{\begin{itemize}[topsep=-5pt,partopsep=0pt,parsep=2pt,itemsep=3pt]}
+	{\end{itemize}}%
+
+	\newenvironment{ct_version_list_sub}
+		{\begin{itemize}[topsep=-0pt,partopsep=0pt,parsep=0pt,itemsep=0pt]}
+		{\end{itemize}}%
+
+\renewcommand{\descriptionlabel}[1]{%
+	\hspace*{\labelsep}%
+	\color{ctcolorlistlabel}%
+	\tgherosfont\textbf{#1}%
+}
+\newenvironment{my_list_desc}
+	{\begin{description}[%
+		style=multiline,%
+		topsep=-5pt,%
+		leftmargin=3cm,%
+		partopsep=0pt,%
+		parsep=2pt,%
+		itemsep=3pt%
+	]}
+	{\end{description}}%
+
+\RequirePackage{enumitem}
+\newenvironment{listenum}{
+  \renewcommand{\labelenumi}{(\roman{enumi})}
+  \begin{enumerate}[leftmargin=35pt]
+  }{\end{enumerate}}
+      
+% **************************************************
+% Header and Footer
+% **************************************************
+\pagestyle{fancy}
+\renewcommand{\chaptermark}[1]{%
+	\markboth{%
+		\footnotesize%
+		{\color{ctcolorfootermark}\textbf{\chaptername\ \thechapter}}%
+		\quad%
+		{\color{ctcolorfootermark}#1}% %was ctcolorfootertitle
+	}{}%
+}
+\renewcommand{\sectionmark}[1]{%
+	\markright{%
+		\footnotesize%
+		{\color{ctcolorfootermark}\textbf{\thesection}}%
+		\quad%
+		{\color{ctcolorfootermark}#1}% %was ctcolorfootertitle 
+	}%
+}
+%
+\fancypagestyle{plain}{%
+	\fancyhf{}
+	\fancyfootoffset[OR]{1.85cm}
+	\fancyfoot[OR]{%
+		{\ }\tgherosfont%
+		{\color{ctcolorfooterline}\rule[-90pt]{2.5pt}{100pt}}%
+		\hspace*{10pt}\begin{minipage}[b]{1.5cm}%
+			\color{ctcolorfooterpage}\normalsize\textbf{\thepage}%
+		\end{minipage}%
+	}
+	\fancyfootoffset[EL]{1.85cm}
+	\fancyfoot[EL]{%
+		\tgherosfont%
+		\begin{minipage}[b]{1.5cm}%
+			\raggedleft\color{ctcolorfooterpage}\normalsize\textbf{\thepage}%
+		\end{minipage}%
+		\hspace*{10pt}{\color{ctcolorfooterline}\rule[-90pt]{2.5pt}{100pt}}%
+	}
+	\renewcommand{\headrulewidth}{0pt}
+	\renewcommand{\footrulewidth}{0pt}
+}
+%
+\fancypagestyle{maincontentstyle}{%
+	\pagestyle{plain}
+	\fancyhf{}
+	\fancyfootoffset[OR]{1.85cm}
+	\fancyfoot[OR]{%
+		{\ }\tgherosfont\footnotesize%
+		\rightmark%
+		\hspace*{0.75cm}{\color{ctcolorfooterline}\rule[-90pt]{2.5pt}{100pt}}%
+		\hspace*{10pt}\begin{minipage}[b]{1.5cm}%
+			\color{ctcolorfooterpage}\normalsize\textbf{\thepage}%
+		\end{minipage}%
+	}
+	\fancyfootoffset[EL]{1.85cm}
+	\fancyfoot[EL]{%
+		\tgherosfont\footnotesize%
+		\begin{minipage}[b]{1.5cm}%
+			\raggedleft\color{ctcolorfooterpage}\normalsize\textbf{\thepage}%
+		\end{minipage}%
+		\footnotesize%
+		\hspace*{10pt}{\color{ctcolorfooterline}\rule[-90pt]{2.5pt}{100pt}}%
+		\hspace*{0.75cm}\leftmark%
+	}
+}
+
+% **************************************************
+% New Commands
+% **************************************************
+% TODO command
+\definecolor{color_todo}{rgb}{.6,.8,.2}
+\newcommand{\TODO}[1]{{\color{color_todo}\textbf{[TODO #1]}}}
+%
+%
+% ref commands, e.g. for images, tables and text labels
+% --------------------------------------------------
+% RESULT = (siehe Tab. 12.4)
+\newcommand{\tabref}[1]{(siehe Tab.~\ref{#1})}
+%
+% RESULT = (siehe Tab. 12.4)
+\newcommand{\tableref}[1]{(siehe Tab.~\ref{#1} Seite~\pageref{#1})}
+%
+% --------------------------------------------------
+% RESULT = (siehe 3.4)
+\newcommand{\tref}[1]{(siehe \ref{#1})}
+%
+% RESULT = Abschnitt 3.4
+\newcommand{\treft}[1]{Abschnitt~\ref{#1}}
+%
+% RESULT = (siehe 3.4, Seite 12)
+\newcommand{\textref}[1]{(siehe \ref{#1}, Seite~\pageref{#1})}
+%
+% RESULT = Abschnitt 3.4 (siehe Seite 12)
+\newcommand{\textreft}[1]{Abschnitt~\ref{#1} (siehe Seite~\pageref{#1})}
+%
+% --------------------------------------------------
+% RESULT = (siehe Abb. 10.4)
+\newcommand{\fref}[1]{(siehe Abb.~\ref{#1})}
+%
+% RESULT = (siehe Abb. 10.4 b)
+\newcommand{\frefadd}[2]{(siehe Abb.~\ref{#1}~#2)}
+%
+% RESULT = (siehe Abb. 10.4, Seite 12)
+\newcommand{\figref}[1]{(siehe Abb.~\ref{#1}, Seite~\pageref{#1})}
+%
+% RESULT = (siehe Abb. 10.4 b, Seite 12)
+\newcommand{\figrefadd}[2]{(siehe Abb.~\ref{#1}~#2, Seite~\pageref{#1})}
+%
+% RESULT = Abbildung 10.4
+\newcommand{\figreft}[1]{Abbildung~\ref{#1}}
+%
+% RESULT = Abbildung 10.4 b
+\newcommand{\figrefaddt}[2]{Abbildung~\ref{#1}~#2}
+%
+% --------------------------------------------------
+% RESULT = (siehe Seite 12)
+\newcommand{\seepage}[1]{(siehe Seite~\pageref{#1})}
+
+
+% **************************************************
+% Sectioning Commands
+% **************************************************
+%
+\newcommand*{\ctSetFont}[3]{%
+	arg1=#1, arg2=#2, arg3=#3%
+}
+
+% own font definitions
+\newcommand{\helv}{\fontfamily{phv}\fontsize{9}{11}\selectfont}
+\newcommand{\book}{\fontfamily{pbk}\fontseries{m}\fontsize{11}{13}\selectfont}
+\newcommand{\tgherosfont}{\fontfamily{qhv}\selectfont}
+
+\newcommand{\thesispartlabelfont}{\color{ctcolorpartnum}\book\fontsize{60}{60}\selectfont}
+\newcommand{\thesispartfont}{\color{ctcolorparttext}\huge \tgherosfont\selectfont}
+\newcommand{\thesischapterfont}{\color{ctcolorblack}\huge \fontfamily{phv}\selectfont}
+%\newcommand{\thesissectionfont}{\color{ctcolormain}\LARGE\bfseries \tgherosfont}
+\newcommand{\thesissectionfont}{\color{ctcolorsection}\LARGE \tgherosfont}
+\newcommand{\thesissubsectionfont}{\color{ctcolorsubsection}\Large \tgherosfont}
+\newcommand{\thesissubsubsectionfont}{\color{ctcolorsubsubsection}\large\tgherosfont}
+\newcommand{\thesisparagraphfont}{\color{ctcolorparagraph}\tgherosfont\large\bfseries}
+%
+% headings
+\setkomafont{part}{\thesispartfont} % for chapter entries
+\setkomafont{chapter}{\thesischapterfont} % for chapter entries
+\setkomafont{section}{\thesissectionfont} % for section entries
+\setkomafont{subsection}{\thesissubsectionfont} % for section entries
+\addtokomafont{subsubsection}{\thesissubsubsectionfont}
+%\addtokomafont{paragraph}{\tgherosfont}
+\setkomafont{paragraph}{\thesisparagraphfont}
+
+%\setkomafont{subsection}{\large} % for subsection entries
+
+% **************************************************
+% Sectioning
+% **************************************************
+%
+% -- modifications regarding sectioning (structural) commands,
+%    i.e. \part, \chapter, \section, \subsection, \subsubsection, \paragraph
+%
+%
+% The package titlesec enables us to modify (style) the sectioning commands
+% -- usage: \titlespacing{\command}{left}{before-sep}{after-sep}[right-sep]
+% -- usage: \titleformat{\command}[shape]{format}{label}{sep}{before}[after]
+% -- usage: \titleclass{\command}{class}
+%    -- classes: page (single page), top (like chapters),
+%    straight (title in the middle)
+\setcounter{secnumdepth}{3}
+\RequirePackage{titlesec}
+%
+% > formats: \part
+\titleclass{\part}{top} % <-- display:
+\assignpagestyle{\part}{empty}	% <-- no page numbers/decorations
+\titleformat{\part}%
+	[display]%
+	{\usekomafont{part}}%
+	{\raggedleft{%
+		{\thesispartlabelfont%
+			\partname\ \thepart\ \quad}%
+		{\color{ctcolorpartline}%
+			\hspace*{-200pt}\rule[20pt]{600pt}{2pt}}
+		}%
+	}%
+	{0em}%
+	{\raggedleft}%
+	[\phantomsection]
+%
+% > formats: \chapter
+%
+% The following command is used to avoid overlapping
+% of the chapter headline text, see bug/ticket #1
+% Solution adapted according to the comment from "Gonzalo Medina" - Thanks
+% http://tex.stackexchange.com/questions/165878/width-of-chapter-section-with-titlesec
+\newcommand\ctformatchapter[1]{\parbox[t]{\dimexpr\textwidth-4em\relax}{\raggedright#1}}
+%
+\titleformat{\chapter}[display]%
+	{\usekomafont{chapter}}%
+	{\vspace{6em}\raggedleft{%
+		{\color{ctcolorchapterline}%
+			\rule[-5pt]{2pt}{5cm}}\quad%
+		{\color{ctcolorchapternum}
+			\fontsize{60}{60}\selectfont\thechapter}%
+		}%
+	}%
+	{2.1em}%
+	{\ctformatchapter}%
+	[\phantomsection]
+%
+% > formats: \section
+\newcommand\sectionbreak{\clearpage}
+\titlespacing{\section}{0em}{.75em}{.2em}%[0pt]
+%\ifthenelse{\boolean{@sectionlabeloutside}}%
+\ifct@cthesis@hangsection
+%	{%
+		\titleformat{\section}[hang]%
+			{\usekomafont{section}}%
+			{\color{ctcolormain}\thesection\hspace*{10pt}}%
+			{0pt}%
+			{\raggedright}%
+			[\phantomsection]
+%	}{%
+\else
+		\titleformat{\section}[block]%
+			{\usekomafont{section}}%
+			{\color{ctcolormain}\thesection\hspace*{10pt}}%
+			{0pt}%
+			{\raggedright}%
+			[\phantomsection]
+%	}
+\fi
+%
+% > formats: \subsection
+\titlespacing{\subsection}{0em}{.5em}{0em}%[0pt]
+\newcommand\subsectionbreak{\clearpage}
+% \ifthenelse{\boolean{@subsectionlabeloutside}}%
+\ifct@cthesis@hangsubsection
+%	{%
+		\titleformat{\subsection}[hang]%
+			{\usekomafont{subsection}}%
+			{\color{ctcolormain}\thesubsection\hspace*{10pt}}%
+			{0pt}%
+			{\raggedright}%
+			[\phantomsection]
+%	}{%
+\else
+		\titleformat{\subsection}[block]%
+			{\usekomafont{subsection}}%
+			{\color{ctcolormain}\thesubsection\hspace*{10pt}}%
+			{0pt}%
+			{\raggedright}%
+			[\phantomsection]
+%	}
+\fi
+%
+% > formats: \subsection
+\titlespacing{\subsubsection}{0em}{.5em}{0em}%[0pt]
+%\ifthenelse{\boolean{@subsectionlabeloutside}}%
+\ifct@cthesis@hangsubsubsection
+%	{%
+		\titleformat{\subsubsection}[hang]%
+			{\usekomafont{subsubsection}}%
+			{\color{ctcolormain}\thesubsubsection\hspace*{10pt}}%
+			{0pt}%
+			{\raggedright}%
+			[\phantomsection]
+%	}{%
+\else
+		\titleformat{\subsubsection}[block]%
+			{\usekomafont{subsubsection}}%
+			{\color{ctcolormain}\thesubsubsection\hspace*{10pt}}%
+			{0pt}%
+			{\raggedright}%
+			[\phantomsection]
+%	}
+\fi                        
+%
+% > formats: \paragraph
+\titlespacing{\paragraph}{0pt}{\parsep}{1em}%[0pt]
+% \titleformat{\paragraph}[runin]%
+% {\usekomafont{paragraph}}%
+% {}%
+% {}%
+% {}%
+% []
+% 
+
+% **************************************************
+% Handle languages
+% **************************************************
+%
+\def\switcht@english{%
+\def\abstractname{Abstract}%
+\def\ackname{Acknowledgements}%
+\def\andname{and}%
+\def\bibname{References}%
+\def\lastandname{, and}%
+\def\appendixname{Appendix}%
+\def\chaptername{Chapter}%
+\def\claimname{Claim}%
+\def\conjecturename{Conjecture}%
+\def\contentsname{Contents}%
+\def\corollaryname{Corollary}%
+\def\definitionname{Definition}%
+\def\emailname{e-mail}%
+\def\examplename{Example}%
+\def\exercisename{Exercise}%
+\def\experiencename{Experience}%
+\def\figurename{Fig.}%
+\def\forewordname{Foreword}%
+\def\keywordname{{\bf Key words:}}%
+\def\indexname{Index}%
+\def\lemmaname{Lemma}%
+\def\contriblistname{List of Contributors}%
+\def\listfigurename{List of Figures}%
+\def\listtablename{List of Tables}%
+\def\mailname{{\it Correspondence to\/}:}%
+\def\noteaddname{Note added in proof}%
+\def\notename{Note}%
+\def\partname{Part}%
+\def\prefacename{Preface}%
+\def\problemname{Problem}%
+\def\proofname{Proof}%
+\def\propertyname{Property}%
+\def\propositionname{Proposition}%
+\def\questionname{Question}%
+\def\refname{References}%
+\def\remarkname{Remark}%
+\def\seename{see}%
+\def\solutionname{Solution}%
+\def\solutionNOname{Solution}%
+\def\subclassname{{\it Subject Classifications\/}:}%
+\def\tablename{Tab.}%
+\def\theoremname{Theorem}
+\def\theoremname{Theorem}
+\def\docstate{Date}
+\def\institute{Chair of Automatic Control}
+ \def\university{Kiel University}
+}
+\switcht@english
+% Names of theorem like environments are already defined
+% but must be translated if another language is chosen
+%
+%
+% German section
+\def\switcht@deutsch{\svlanginfo
+ \def\abstractname{Zusammenfassung}%
+ \def\ackname{Danksagung}%
+ \def\andname{und}%
+ \def\lastandname{ und}%
+ \def\appendixname{Anhang}%
+ \def\bibname{Literaturverzeichnis}%
+ \def\chaptername{Kapitel}%
+ \def\claimname{Behauptung}%
+ \def\conjecturename{Hypothese}%
+ \def\contentsname{Inhaltsverzeichnis}%
+ \def\corollaryname{Korollar}%
+ \def\definitionname{Definition}%
+ \def\emailname{E-mail}%
+ \def\examplename{Beispiel}%
+ \def\exercisename{Aufgabe}%
+ \def\experiencename{Erfahrungssatz}%
+ \def\figurename{Abb.}%
+ \def\forewordname{Geleitwort}%
+ \def\keywordname{{\bf Schl\"usselw\"orter:}}%
+ \def\indexname{Sachverzeichnis}%
+ \def\lemmaname{Lemma}%
+ \def\contriblistname{Mitarbeiter}%
+ \def\listfigurename{Abbildungsverzeichnis}%
+ \def\listtablename{Tabellenverzeichnis}%
+ \def\mailname{{\it Correspondence to\/}:}%
+ \def\noteaddname{Nachtrag}%
+ \def\notename{Anmerkung}%
+ \def\partname{Teil}%
+ \def\prefacename{Vorwort}%
+ \def\problemname{Problem}%
+ \def\proofname{Beweis}%
+ \def\propertyname{Eigenschaft}%
+ \def\propositionname{Proposition}%
+ \def\questionname{Frage}%
+ \def\refname{Literaturverzeichnis}%
+ \def\remarkname{Anmerkung}%
+ \def\seename{siehe}%
+ \def\solutionname{L\"osung}%
+ \def\solutionNOname{L\"osung}%
+ \def\remarkNOname{Anmerkung}%
+ \def\subclassname{{\it Subject Classifications\/}:}%
+ \def\tablename{Tab.}%
+ \def\experiencename{Erfahrungssatz}%
+ \def\theoremname{Satz}%
+ \def\docstate{Stand}
+ \def\institute{Lehrstuhl f\"ur Regelungstechnik}
+ \def\university{Christian--Albrechts--Universit\"at Kiel}
+}
+
+% **************************************************
+% Mathematical environments
+% **************************************************
+\RequirePackage[fleqn]{amsmath}
+\RequirePackage{amsthm,amssymb,amsfonts}
+\RequirePackage{mathtools}
+\RequirePackage[framemethod=tikz]{mdframed}
+
+%%%% > Define theorem styles
+
+\newtheoremstyle{mytheoremstyle} % name
+{\topsep}   % Space above
+{0\topsep}  % Space below
+{\itshape}  % Body font
+{}          % Indent amount
+{\bfseries} % Theorem head font
+{.}         % Punctuation after theorem head
+{0.5em}     % Space after theorem head, empty interword space
+{\thmname{#1}\thmnumber{ #2}\thmnote{ \textbf{(#3)}}}  % Theorem head spec (can be left empty, meaning ‘normal’)
+
+%%%% > Definitions
+
+\theoremstyle{mytheoremstyle}
+\newtheorem{assumption}{Annahme} 
+\newtheorem{notation}{Notation}
+\newtheorem*{notation*}{Notation}
+%
+%\newtheorem{definition}{\definitionname}
+%\newtheorem{theorem}{\theoremname}
+%\newtheorem{lemma}{\lemmaname}
+\newtheorem{proposition}{\propositionname}
+\newtheorem{corollary}{\corollaryname}
+\newtheorem{example}{\examplename}
+\newtheorem{exercise}{\exercisename}
+%\newtheorem{remark}{\remarkname}
+\newtheorem{solution}{\solutionname}
+\newtheorem{solutionNO}{\solutionNOname}
+%
+%\renewcommand{\thedefinition}{\arabic{chapter}.\arabic{definition}}
+%\renewcommand{\thetheorem}{\arabic{chapter}.\arabic{theorem}}
+%\renewcommand{\thelemma}{\arabic{chapter}.\arabic{lemma}}
+\renewcommand{\theproposition}{\arabic{chapter}.\arabic{proposition}}
+\renewcommand{\thecorollary}{\arabic{chapter}.\arabic{corollary}}
+%\renewcommand{\theremark}{\arabic{chapter}.\arabic{remark}}
+\renewcommand{\theassumption}{\arabic{chapter}.\arabic{assumption}}
+\renewcommand{\theexample}{\arabic{chapter}.\arabic{example}}
+\renewcommand{\thenotation}{\arabic{chapter}.\arabic{notation}}
+\renewcommand{\theexercise}{\arabic{chapter}.\arabic{exercise}}
+\renewcommand{\thesolution}{\arabic{chapter}.\arabic{exercise}}
+\renewcommand{\thesolutionNO}{\arabic{chapter}.\arabic{exercise}}
+
+%
+\allowdisplaybreaks %local page break prevention by \\*
+
+% Resetting
+\@addtoreset{definition}{chapter}
+\@addtoreset{theorem}{chapter}
+\@addtoreset{lemma}{chapter}
+\@addtoreset{proposition}{chapter}
+\@addtoreset{corollary}{chapter}
+\@addtoreset{remark}{chapter}
+\@addtoreset{assumption}{chapter}
+\@addtoreset{example}{chapter}
+\@addtoreset{notation}{chapter}
+\@addtoreset{solution}{chapter}
+\@addtoreset{solutionNO}{chapter}
+
+%Remove spacing before proof environment
+\renewenvironment{proof}[1][\proofname]{\par
+  \pushQED{\qed}%
+  \normalfont \partopsep=\z@skip \topsep=\z@skip
+  \trivlist
+  \item[\hskip\labelsep
+        \itshape
+    #1\@addpunct{.}]\ignorespaces
+}{%
+  \popQED\endtrivlist\@endpefalse
+}
+
+% **************************************************
+% Framed boxes and environments
+% **************************************************
+%\RequirePackage{mdframed}%
+\RequirePackage{xpatch}
+%Patch required to fix mdframed: https://tex.stackexchange.com/questions/292083/mdframed-and-skipbelow
+\xpatchcmd{\endmdframed}
+  {\aftergroup\endmdf@trivlist\color@endgroup}
+  {\endmdf@trivlist\color@endgroup\@doendpe}
+  {}{}
+  
+%%%% > Length definitions
+
+\newlength{\btopsep}
+\setlength{\btopsep}{1.5ex}
+\mdfsetup{skipabove=\topskip,skipbelow=0\topskip}
+
+%%%% > Some environments, mainly compatibility
+
+\newenvironment{definitionbox}{}{}%
+\newenvironment{theorembox}{}{}%
+\newenvironment{exercisebox}{}{}%
+\newenvironment{lemmabox}{}{}%
+\newenvironment{remarkbox}{}{}%
+\newenvironment{solutionbox}{}{}%
+
+% Boxed equations
+\mdfdefinestyle{eqnstyle}{%
+  innertopmargin=-1ex,innerbottommargin=1.5ex,
+  skipabove=0.25\topskip,skipbelow=-0.5\topskip,
+  leftmargin=0ex,splitbottomskip=0ex,
+  splittopskip=0ex,topline=false,leftline=false,
+  bottomline=false,rightline=false,innerleftmargin=0pt,
+  innerrightmargin=0pt,font=\normalfont,
+  backgroundcolor=eqncolor,}
+\newenvironment{eqnbox}[1][\eqnvskip]
+{\begin{mdframed}[style=eqnstyle]}%
+  {\end{mdframed}}
+
+% Misc gray box
+\mdfdefinestyle{grayboxstyle}{%
+  innertopmargin=-2ex,innerbottommargin=1ex,
+  skipabove=0ex,skipbelow=0ex,
+  %leftmargin=1ex,rightmargin=1ex,splitbottomskip=0ex,
+  %splittopskip=0ex,
+  topline=false,leftline=false,
+  bottomline=false,rightline=false,
+  % ,innerleftmargin=0pt,
+  % innerrightmargin=0pt,
+  font=\normalfont,
+  backgroundcolor=eqncolor,}
+\newenvironment{graybox}[1][\eqnvskip]
+{\begin{mdframed}[style=grayboxstyle]}%
+{\end{mdframed}}
+
+%Redefine theorem styles
+\mdfdefinestyle{sptheoremstyle}{%
+  linecolor=definitioncolor,linewidth=4pt,%
+  splitbottomskip=0ex,splittopskip=0ex,
+  %frametitlerule=true,%
+  %frametitlerulewidth=2pt,
+  %%frametitlebackgroundcolor=definitioncolor,
+  innertopmargin=0\topskip
+}
+\mdfdefinestyle{spremarkstyle}{%
+  linecolor=remarkcolor,linewidth=4pt,%
+  %frametitlerule=true,%
+  %frametitlerulewidth=2pt,
+  %%frametitlebackgroundcolor=definitioncolor,
+  innertopmargin=0\topskip
+}
+\mdfdefinestyle{spexercisestyle}{%
+  linecolor=exercisecolor,linewidth=4pt,%
+  %frametitlerule=true,%
+  %frametitlebackgroundcolor=exercisecolor,
+  innertopmargin=0\topskip
+}
+
+\mdtheorem[style=sptheoremstyle]{definition}{\definitionname}
+\renewcommand{\thedefinition}{\arabic{chapter}.\arabic{definition}}
+
+\mdtheorem[style=sptheoremstyle]{theorem}{\theoremname}
+\renewcommand{\thetheorem}{\arabic{chapter}.\arabic{theorem}}
+
+\mdtheorem[style=sptheoremstyle]{lemma}{\lemmaname}
+\renewcommand{\thelemma}{\arabic{chapter}.\arabic{lemma}}
+
+\mdtheorem[style=spremarkstyle]{remark}{\remarkname}
+\renewcommand{\theremark}{\arabic{chapter}.\arabic{remark}}
+
+\mdtheorem[style=sptheoremstyle]{experience}{\experiencename}
+\renewcommand{\theexperience}{}
+
+% \mdtheorem[style=spexercisestyle]{exercise}{\exercisename}
+% \renewcommand{\theexercise}{\arabic{chapter}.\arabic{exercise}}
+
+% \mdtheorem[style=spexercisestyle]{example}{\examplename}
+% \renewcommand{\theexample}{\arabic{chapter}.\arabic{example}}
+
+%%%% > Exercises / examples / solutions
+
+\mdfdefinestyle{example}{%
+  %skipabove=\btopsep,skipbelow=\btopsep,
+  innertopmargin=0ex,innerbottommargin=0ex,
+  leftmargin=-13pt,splitbottomskip=0ex,
+  splittopskip=0ex,topline=false,leftline=true,
+  bottomline=false,rightline=false,
+  innerrightmargin=0pt,innerlinewidth=4pt,
+  font=\normalfont,linecolor=examplecolor
+}
+\surroundwithmdframed[style=example]{example}
+
+\mdfdefinestyle{exercise}{%
+  %skipabove=\btopsep,skipbelow=\btopsep,
+  innertopmargin=0ex,innerbottommargin=0ex,
+  leftmargin=-13pt,splitbottomskip=0ex,
+  splittopskip=0ex,topline=false,leftline=true,
+  bottomline=false,rightline=false,
+  innerrightmargin=0pt,innerlinewidth=4pt,
+  font=\normalfont,linecolor=exercisecolor
+}
+\surroundwithmdframed[style=exercise]{exercise}
+
+\mdfdefinestyle{solution}{%
+  %skipabove=\btopsep,skipbelow=\btopsep,
+  innertopmargin=0ex,innerbottommargin=0ex,
+  leftmargin=-13pt,splitbottomskip=0ex,
+  splittopskip=0ex,topline=false,leftline=true,
+  bottomline=false,rightline=false,
+  innerrightmargin=0pt,%innerlinewidth=2pt,
+  tikzsetting={draw=exercisecolor,line width=8pt,%
+    dashed,%
+    dash pattern= on 4pt off 4pt},
+  font=\normalfont,%linecolor=exercisecolor,
+  linecolor=white
+}
+\surroundwithmdframed[style=solution]{solution}
+\surroundwithmdframed[style=solution]{solutionNO}
+
+%%%% > Definitions [currently unused]
+
+%Line on left of env
+\mdfdefinestyle{lledefinition}{%
+  %skipabove=\btopsep,skipbelow=\btopsep,
+  innertopmargin=1ex,innerbottommargin=1ex,
+  leftmargin=-13pt,splitbottomskip=0ex,
+  splittopskip=0ex,topline=false,leftline=true,
+  bottomline=false,rightline=false,
+  innerrightmargin=0pt,innerlinewidth=6pt,
+  font=\normalfont,linecolor=definitioncolor,
+}
+%Boxed
+\mdfdefinestyle{boxdefinition}{%
+  %skipabove=0\btopsep,skipbelow=0\btopsep,
+  innertopmargin=1ex,innerbottommargin=1ex,
+  leftmargin=0ex,splitbottomskip=0ex,
+  splittopskip=0ex,topline=false,leftline=false,
+  bottomline=false,rightline=false,innerleftmargin=5pt,
+  innerrightmargin=5pt,font=\normalfont,
+  backgroundcolor=definitioncolor,
+}
+%\surroundwithmdframed[style=boxdefinition]{definition}
+
+%%%% > Theorems
+
+% Line on left of env
+\mdfdefinestyle{lletheorem}{%
+  %skipabove=\btopsep,skipbelow=\btopsep,
+  innertopmargin=1ex,innerbottommargin=1ex,
+  leftmargin=-13pt,splitbottomskip=0ex,
+  splittopskip=0ex,topline=false,leftline=true,
+  bottomline=false,rightline=false,
+  innerrightmargin=0pt,innerlinewidth=6pt,
+  font=\normalfont,linecolor=theoremcolor,
+}
+% Boxed
+\mdfdefinestyle{boxtheorem}{%
+  %skipabove=\btopsep,skipbelow=\btopsep,
+  innertopmargin=1ex,innerbottommargin=1ex,
+  leftmargin=0ex,splitbottomskip=0ex,
+  splittopskip=0ex,topline=false,leftline=false,
+  bottomline=false,rightline=false,innerleftmargin=5pt,
+  innerrightmargin=5pt,font=\normalfont,
+  backgroundcolor=definitioncolor,
+}
+%
+%\surroundwithmdframed[style=boxtheorem]{theorem}
+
+%%%% > Lemmas
+
+% Line on left of env
+\mdfdefinestyle{llelemma}{%
+  %skipabove=\btopsep,skipbelow=\btopsep,
+  innertopmargin=1ex,innerbottommargin=1ex,
+  leftmargin=-13pt,splitbottomskip=0ex,
+  splittopskip=0ex,topline=false,leftline=true,
+  bottomline=false,rightline=false,
+  innerrightmargin=0pt,innerlinewidth=6pt,
+  font=\normalfont,linecolor=lemmacolor,
+}
+% Boxed
+\mdfdefinestyle{boxlemma}{%
+  %skipabove=\btopsep,skipbelow=\btopsep,
+  innertopmargin=1ex,innerbottommargin=1ex,
+  leftmargin=0ex,splitbottomskip=0ex,
+  splittopskip=0ex,topline=false,leftline=false,
+  bottomline=false,rightline=false,innerleftmargin=5pt,
+  innerrightmargin=5pt,font=\normalfont,
+  backgroundcolor=definitioncolor,
+}
+%\surroundwithmdframed[style=boxlemma]{lemma}
+%
+
+%%%% > Remarks
+
+% Line on left of env
+\mdfdefinestyle{lleremark}{%
+  %skipabove=\btopsep,skipbelow=\btopsep,
+  innertopmargin=2ex,innerbottommargin=1ex,
+  leftmargin=-13pt,splitbottomskip=0ex,
+  splittopskip=0ex,topline=false,leftline=true,
+  bottomline=false,rightline=false,
+  innerrightmargin=0pt,innerlinewidth=6pt,
+  font=\normalfont,linecolor=remarkcolor,
+}
+% Boxed
+\mdfdefinestyle{boxremark}{%
+  %skipabove=\btopsep,skipbelow=\btopsep,
+  innertopmargin=1ex,innerbottommargin=1ex,
+  leftmargin=0ex,splitbottomskip=0ex,
+  splittopskip=0ex,topline=false,leftline=false,
+  bottomline=false,rightline=false,innerleftmargin=5pt,
+  innerrightmargin=5pt,font=\normalfont,
+  backgroundcolor=remarkcolor,
+}
+%\surroundwithmdframed[style=remark]{remark}
+%
+
+%Concerning examples and solutions
+%\def\skipextosol{\vspace{0ex}}
+\def\skipextosol{}
+
+%Subexample
+\newenvironment{subexample}{
+  \renewcommand{\labelenumi}{\alph{enumi})}
+  \begin{enumerate}
+    \setlength{\itemsep}{1pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+  }{\end{enumerate}}  
+
+% **************************************************
+% ToC, LoF, LoT
+% **************************************************
+%
+% -- modifications regarding the table of contents,
+%    the list of figures and the list of tables
+%
+%
+% The tocloft package enables us to control the typographic design of the
+% table of contents, list of figures and list of tables
+\RequirePackage{tocloft}
+%
+% > adjusts the indention for figure and table entries (lof and lot)
+%   -- \cftsetindents{entry}{indent}{numwidth} sets the entry's indent to
+%      the length indent and its numwidth to the length numwidth
+\cftsetindents{figure}{0em}{3em}
+\cftsetindents{table}{0em}{3em}
+%
+%
+%
+% **************************************************
+% Mishmash
+% **************************************************
+%
+% Clean chapter quotations
+\newcommand{\hugequote}{%
+	{\book\fontsize{75}{80}\selectfont%
+	\hspace*{-.475em}\color{ctcolorgraylight}%
+	\textit{\glqq}%
+	\vskip -.26em}%
+}
+\newcommand{\cleanchapterquote}[3]{%
+	\begin{minipage}{.865\textwidth}%
+		\begin{flushright}
+			\begin{minipage}{.65\textwidth}%
+				\begin{flushleft}
+					{\hugequote}\textit{#1}
+				\end{flushleft}
+	    		\begin{flushright}
+    				--- \textbf{#2} \\
+    				#3
+		    	\end{flushright}
+		    \end{minipage}%
+		\end{flushright}
+	\end{minipage}%
+	\bigskip
+}
+%
+% Clean Quotation environment
+\newenvironment{thesis_quotation}%
+	{%
+	\begin{minipage}{.865\textwidth}%
+		\begin{flushright}
+			\begin{minipage}{.95\textwidth}%
+	}%
+	{%
+			\end{minipage}%
+		\end{flushright}
+	\end{minipage}%
+	}%
+%
+% Clean signs around word origins in definitions
+%\newcommand{\cthesisorigin}[1]{\textsf{\textlangle}#1\textsf{\textrangle}}
+
+%%%%% >> Textual Formatting 
+        
+ %Labels
+\renewcommand{\labelitemi}{\parbox[t]{3mm}{\rule{3mm}{3mm}}}
+\newcommand{\slnewline}{\altTextSlide{}{\\}}
+\newcommand{\slnewpage}{\altTextSlide{}{\newpage}}
+\newcommand{\slnormal}[1]{\altTextSlide{#1}{{\normalsize #1}}}
+\newcommand{\slsmall}[1]{\altTextSlide{#1}{{\small #1}}}
+
+
+%%%% >> Mathematical Tools
+\def\lnfrac#1/#2{\raise.7ex\hbox{\the\scriptfont0 #1}%
+  \kern-0.15em/\kern-0.15em\lower.2ex\hbox{\the\scriptfont0 #2}}
+\def\adfrac{\leavevmode\kern.12em\lnfrac}       
+
+
