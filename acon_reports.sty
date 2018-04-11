@@ -106,6 +106,12 @@
 \@ifundefined{extrasngerman}{}{\addto\extrasngerman{\switcht@deutsch}}%
 }{\switcht@@therlang}%
 
+% OPTION showsolution
+% --> values = true|false
+\define@boolkey[ct]{cthesis}{showsolution}[true]{}
+\setkeys[ct]{cthesis}{showsolution=true}
+
+
 \DeclareOptionX*{
 	\PackageWarning{cleanthesis}{Unknown option ‘\CurrentOption’}%
 }
@@ -1232,5 +1238,7 @@ footskip=2cm,					% 	- footer skip size
 
 % Special environments that can be shown or not shown
 \RequirePackage{comment}
-\RequirePackage{ifthen}
-\ifthenelse{\isundefined{\showloesung}}{\excludecomment{solution}}{}
+\ifct@cthesis@showsolution
+\else
+\excludecomment{solution}
+\fi
