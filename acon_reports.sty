@@ -1216,19 +1216,21 @@ footskip=2cm,					% 	- footer skip size
 %
 % Clean Quotation environment
 \newenvironment{thesis_quotation}%
-	{%
-	\begin{minipage}{.865\textwidth}%
-		\begin{flushright}
-			\begin{minipage}{.95\textwidth}%
-	}%
-	{%
-			\end{minipage}%
-		\end{flushright}
-	\end{minipage}%
-	}%
-%
+{%
+  \begin{minipage}{.865\textwidth}%
+    \begin{flushright}
+      \begin{minipage}{.95\textwidth}%
+      }%
+      {%
+      \end{minipage}%
+    \end{flushright}
+  \end{minipage}%
+}%
+% 
 % Clean signs around word origins in definitions
-%\newcommand{\cthesisorigin}[1]{\textsf{\textlangle}#1\textsf{\textrangle}}
+% \newcommand{\cthesisorigin}[1]{\textsf{\textlangle}#1\textsf{\textrangle}}
 
-
-
+% Special environments that can be shown or not shown
+\RequirePackage{comment}
+\RequirePackage{ifthen}
+\ifthenelse{\isundefined{\showloesung}}{\excludecomment{solution}}{}
