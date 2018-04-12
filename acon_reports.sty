@@ -23,7 +23,7 @@
 % **************************************************
 %
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{acon_reports}[2017/10/19 v0.1 Reports, thesis and lecture notes style derived from cleanthesis]
+\ProvidesPackage{acon_reports}[2018/04/12 v0.2 ACON Reports, thesis and lecture notes style derived from cleanthesis]
 %
 % **************************************************
 % Package options
@@ -106,11 +106,15 @@
 \@ifundefined{extrasngerman}{}{\addto\extrasngerman{\switcht@deutsch}}%
 }{\switcht@@therlang}%
 
-% OPTION showsolution
+% OPTION showsolution <- for Exercises and Labs
 % --> values = true|false
 \define@boolkey[ct]{cthesis}{showsolution}[true]{}
 \setkeys[ct]{cthesis}{showsolution=true}
 
+% OPTION showfragen <- for Exercises and Labs
+% --> values = true|false
+\define@boolkey[ct]{cthesis}{showfragen}[true]{}
+\setkeys[ct]{cthesis}{showfragen=true}
 
 \DeclareOptionX*{
 	\PackageWarning{cleanthesis}{Unknown option ‘\CurrentOption’}%
@@ -864,6 +868,16 @@ footskip=2cm,					% 	- footer skip size
 {0.5em}     % Space after theorem head, empty interword space
 {\thmname{#1}\thmnumber{ #2}\thmnote{ \textbf{(#3)}}}  % Theorem head spec (can be left empty, meaning ‘normal’)
 
+\newtheoremstyle{mytheoremstyleC} % name
+{\topsep}   % Space above
+{0\topsep}  % Space below
+{}  % Body font
+{}          % Indent amount
+{\bfseries} % Theorem head font
+{}         % Punctuation after theorem head
+{0em}     % Space after theorem head, empty interword space
+{\thmname{#1}\thmnumber{ #2}\thmnote{ \textbf{(#3)}}}  % Theorem head spec (can be left empty, meaning ‘normal’)
+
 %%%% > Definitions
 
 \theoremstyle{mytheoremstyle}
@@ -892,8 +906,9 @@ footskip=2cm,					% 	- footer skip size
 
 \theoremstyle{mytheoremstyleB}
 \newtheorem{exercise_ueb}{\exercisename}
+\theoremstyle{mytheoremstyleC}
+\newtheorem*{fragen}{}
 
-%
 \allowdisplaybreaks %local page break prevention by \\*
 
 % Resetting
@@ -1156,7 +1171,7 @@ footskip=2cm,					% 	- footer skip size
   innerrightmargin=5pt,font=\normalfont,
   backgroundcolor=remarkcolor,
 }
-%\surroundwithmdframed[style=remark]{remark}
+%\surroundwithmdframed[style=lleremark]{fragen}
 %
 
 %Concerning examples and solutions
@@ -1241,4 +1256,8 @@ footskip=2cm,					% 	- footer skip size
 \ifct@cthesis@showsolution
 \else
 \excludecomment{solution}
+\fi
+\ifct@cthesis@showfragen
+\else
+\excludecomment{fragen}
 \fi
