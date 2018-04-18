@@ -1,5 +1,4 @@
 # Acon templates
-This class provides a template for lecture notes and student thesis.
 
 This class provides a template for lecture notes and studennotes, exercises, labs and student thesis.
 
@@ -92,9 +91,9 @@ Annotations for the usage of the template:
 	* figures:
 	 	```
 		\begin{center}
-		  \includegraphics[]{cart-pendulum.mps}
-		  \mycaptionof{figure}{Pendel--Wagen System.}
-		  \label{fig:chap1:cart-pendulum}
+		  \includegraphics[]{pictiure.pdf}
+		  \mycaptionof{figure}{Caption of table.}
+		  \label{label_for_figure}
 		\end{center}
 		```
 	* tables:
@@ -103,7 +102,7 @@ Annotations for the usage of the template:
 			\begin{tabular}{c|c}
 				a & b
 			\end{tabular}
-			\mycaptionof{table}{ADD}
-			\label{tab:chap1:blabla}
+			\mycaptionof{table}{Caption of the table.}
+			\label{label_for_table}
 		\end{center}
 		```
